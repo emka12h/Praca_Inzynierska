@@ -1,0 +1,28 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
+namespace GlamStudio.Areas.Client.Models
+{
+    public class BookingViewModel
+    {
+        [Required(ErrorMessage = "Wybierz usługę")]
+        [Display(Name = "Usługa")]
+        public int ServiceId { get; set; }
+
+        [Required(ErrorMessage = "Wybierz specjalistę")]
+        [Display(Name = "Specjalista")]
+        public string EmployeeId { get; set; }
+
+        [Required(ErrorMessage = "Wybierz datę")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Data wizyty")]
+        public DateTime Date { get; set; } = DateTime.Today.AddDays(1);
+        [Required(ErrorMessage = "Wybierz godzinę")]
+        [Display(Name = "Godzina")]
+        public TimeSpan Time { get; set; }
+
+        public IEnumerable<SelectListItem>? ServicesList { get; set; }
+        public IEnumerable<SelectListItem>? EmployeesList { get; set; }
+        public IEnumerable<SelectListItem>? AvailableTimeSlots { get; set; }
+    }
+}

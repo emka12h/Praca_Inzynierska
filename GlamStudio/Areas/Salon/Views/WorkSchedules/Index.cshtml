@@ -1,0 +1,223 @@
+﻿@{
+    ViewData["Title"] = "Grafik Pracy";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 10px 20px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+    #calendar a.fc-col-header-cell-cushion {
+        color: #4D4C4A;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 8px 0;
+    }
+
+        #calendar a.fc-col-header-cell-cushion:hover {
+            color: #E8C2C6;
+        }
+
+    #calendar a {
+        color: #4D4C4A;
+        text-decoration: none;
+    }
+
+    #calendar .fc-button {
+        background-color: #A2A98F;
+        border-color: #A2A98F;
+        color: #ffffff;
+        text-transform: capitalize;
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+        #calendar .fc-button:hover {
+            background-color: #8a917a;
+            border-color: #8a917a;
+        }
+
+    #calendar .fc-button-active {
+        background-color: #798069 !important;
+        border-color: #798069 !important;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    }
+
+
+    .fc-timegrid-slot {
+        height: 2.5em !important;
+    }
+
+
+    .fc-event {
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-size: 0.85rem;
+        padding: 2px;
+    }
+
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+
+        .header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+            margin-bottom: 1rem !important;
+        }
+
+            .header-mobile h1 {
+                font-size: 1.6rem;
+            }
+
+            .header-mobile .btn {
+                width: 100%;
+            }
+
+
+        .fc-header-toolbar {
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1rem !important;
+        }
+
+        .fc-toolbar-chunk {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.2rem !important;
+        }
+
+
+        .fc-scroller {
+            overflow-y: auto !important;
+        }
+    }
+</style>
+
+<div class="container pb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-3 header-mobile">
+        <h1 class="mb-0 text-secondary">Grafik Pracy</h1>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-glam-pink shadow-sm">
+                <i class="fas fa-plus me-2"></i> Dodaj zmianę
+            </a>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 py-2" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm rounded-3 border-0">
+        <div class="card-body p-2 p-md-3">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.13/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.13/locales/pl.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var eventsUrl = '@Url.Action("GetSchedules", "WorkSchedules", new { Area = "Salon" })';
+            var isAdmin = @(User.IsInRole("Admin") ? "true" : "false");
+
+            var isMobile = window.innerWidth < 768;
+
+            if (typeof FullCalendar !== 'undefined') {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: isMobile ? 'timeGridDay' : 'timeGridWeek',
+                    locale: 'pl',
+
+                    aspectRatio: isMobile ? 0.8 : 1.8,
+
+                    height: 'auto',
+
+                    firstDay: 1,
+                    slotMinTime: "08:00:00",
+                    slotMaxTime: "20:00:00",
+                    allDaySlot: false,
+                    slotDuration: '00:30:00',
+
+                    headerToolbar: {
+                        left: isMobile ? 'prev,next' : 'prev,next today',
+                        center: 'title',
+                        right: isMobile ? 'today' : 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+
+                    buttonText: {
+                        today: 'Dziś',
+                        month: 'Miesiąc',
+                        week: 'Tydzień',
+                        day: 'Dzień'
+                    },
+
+                    events: eventsUrl,
+                    eventTextColor: '#ffffff',
+                    eventBorderColor: 'transparent',
+
+                    eventClick: function (info) {
+                        if (isAdmin) {
+                            window.location.href = '@Url.Action("Edit", "WorkSchedules", new { Area = "Salon" })' + '?id=' + info.event.id;
+                        }
+                    },
+
+                    windowResize: function(view) {
+                        var newIsMobile = window.innerWidth < 768;
+                        if (newIsMobile) {
+                            calendar.changeView('timeGridDay');
+                            calendar.setOption('aspectRatio', 0.8);
+                            calendar.setOption('headerToolbar', {
+                                left: 'prev,next', center: 'title', right: 'today'
+                            });
+                        } else {
+                            calendar.changeView('timeGridWeek');
+                            calendar.setOption('aspectRatio', 1.8);
+                            calendar.setOption('headerToolbar', {
+                                left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                            });
+                        }
+                    }
+                });
+
+                calendar.render();
+            } else {
+                console.error("Błąd: Biblioteka FullCalendar nie została załadowana.");
+            }
+        });
+    </script>
+}

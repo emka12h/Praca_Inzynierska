@@ -1,0 +1,152 @@
+﻿@model GlamStudio.Areas.Salon.Models.SalonProfileViewModel
+@{
+    ViewData["Title"] = "Edycja Profilu";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 12px 20px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .header-row {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 10px;
+            margin-bottom: 1.5rem !important;
+        }
+
+            .header-row .btn {
+                width: 100%;
+            }
+
+        .form-control-lg {
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+        .row-mobile-stack {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .col-md-6 {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 header-row">
+                <h2 class="mb-0 text-secondary">Edycja Profilu</h2>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Wróć do panelu
+                </a>
+            </div>
+
+            <div class="card shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 mb-4"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label text-muted small text-uppercase fw-bold ls-1">Adres e-mail (Login)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                                <input asp-for="Email" class="form-control form-control-lg bg-light border-start-0 text-muted" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row row-mobile-stack">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label fw-bold">Imię</label>
+                                <input asp-for="FirstName" class="form-control form-control-lg" placeholder="Wpisz imię" />
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label fw-bold">Nazwisko</label>
+                                <input asp-for="LastName" class="form-control form-control-lg" placeholder="Wpisz nazwisko" />
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label fw-bold">Telefon</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-phone text-muted"></i></span>
+                                <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Numer telefonu" />
+                            </div>
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label fw-bold">Adres</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-map-marker-alt text-muted"></i></span>
+                                <input asp-for="Address" class="form-control form-control-lg" placeholder="Ulica i numer" />
+                            </div>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="City" class="form-label fw-bold">Miasto</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-city text-muted"></i></span>
+                                <input asp-for="City" class="form-control form-control-lg" placeholder="Miasto" />
+                            </div>
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-glam-pink btn-lg shadow-sm">
+                                <i class="fas fa-save me-2"></i> Zapisz zmiany
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

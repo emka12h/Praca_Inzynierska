@@ -1,0 +1,433 @@
+﻿html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Styl strony głównej GlamStudio */
+.home-section {
+    min-height: calc(100vh - 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.main-logo {
+    height: 90%;
+    margin: 0 auto;
+    width: 85%;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.btn-home {
+    display: inline-block;
+    background-color: #E8C2C6;
+    color: #4D4C4A;
+    font-weight: 600;
+    font-size: 1.25rem;
+    text-decoration: none;
+    padding: 1rem 3rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-width: 240px;
+    opacity: 0;
+    animation: fadeInUp 1s ease-in-out forwards;
+}
+    /* Opóźnienia dla animacji */
+    .btn-home:nth-child(1) {
+        animation-delay: 0.8s;
+    }
+
+    .btn-home:nth-child(2) {
+        animation-delay: 1s;
+    }
+
+    .btn-home:hover {
+        background-color: #C38E86;
+        color: #000;
+    }
+
+/* Animacje */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-logo {
+        max-width: 280px;
+    }
+
+    .btn-home {
+        font-size: 1rem;
+        padding: 0.7rem 1.5rem;
+        margin: 0.5rem 0;
+    }
+}
+/*Strona Kontakt*/
+.contact-form-wrapper {
+    background-color: #f4f1f1; 
+    padding: 80px; 
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    width: 100%; 
+    box-sizing: border-box; 
+}
+
+    .contact-form-wrapper h3 {
+        font-weight: 700;
+        font-size: 2rem;
+        color: #4D4C4A;
+        margin-bottom: 10px;
+    }
+
+    .contact-form-wrapper p {
+        font-size: 1.05rem;
+        color: #4D4C4A;
+        margin-bottom: 35px;
+    }
+
+    .contact-form-wrapper .form-label {
+        font-weight: 600;
+        color: #4D4C4A;
+        font-size: 1.05rem;
+    }
+
+
+.btn-glam-pink {
+    background-color: #E8C2C6; 
+    border: none;
+    color: #4D4C4A;
+    padding: 12px 25px;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .btn-glam-pink:hover {
+        background-color: #d1a3a4; 
+        color: #000;
+    }
+
+.logo-main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+    .logo-main-container img {
+        max-width: auto; 
+        height: auto;
+    }
+
+
+/*Identity*/
+
+.login-form-wrapper {
+    background-color: #f4f1f1;
+    padding: 80px;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+    .login-form-wrapper h3 {
+        font-weight: 700;
+        font-size: 2rem;
+        color: #4D4C4A;
+        margin-bottom: 10px;
+    }
+
+    .login-form-wrapper p {
+        font-size: 1.05rem;
+        color: #4D4C4A;
+        margin-bottom: 35px;
+    }
+
+    .login-form-wrapper .form-label {
+        font-weight: 600;
+        color: #4D4C4A;
+        font-size: 1.05rem;
+    }
+
+.btn-glam-pink {
+    background-color: #E8C2C6;
+    border: none;
+    color: #4D4C4A;
+    padding: 12px 25px;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .btn-glam-pink:hover {
+        background-color: #d1a3a4;
+        color: #000;
+    }
+
+.logo-main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+    .logo-main-container img {
+        max-width: 90%;
+        height: auto;
+    }
+
+.glam-link {
+    color: #a8776d;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+    .glam-link:hover {
+        text-decoration: underline;
+        color: #7a5750;
+    }
+
+/*Area Client Strona Główna*/
+
+.btn-glam {
+    background-color: #c49b93;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 0;
+    padding: 12px 20px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    position: relative;
+}
+    .btn-glam:hover {
+        background-color: #b38b84;
+        color: #fff;
+    }
+
+    .btn-glam .arrow {
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+        .btn-glam .arrow::after {
+            content: '\2192'; 
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+    .btn-glam:hover .arrow {
+        transform: translateX(5px);
+    }
+
+.offer-cards-container {
+    max-width: 1200px;
+    margin: 50px auto; 
+}
+
+/* Karta (blok oferty) */
+.dashboard-card {
+    background-color: #F8F6F3; 
+    border-radius: 6px;
+    padding: 2.5rem 3rem; 
+    height: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /
+    transition: none; 
+    position: relative; 
+    top: 0; 
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05); 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between;
+}
+
+/* Tytuł karty */
+.dashboard-title {
+    font-weight: 500; 
+    font-size: 2.5rem; 
+    color: #4C4C4C; 
+    margin-bottom: 2.5rem; 
+}
+
+/* Lista linków w karcie */
+.dashboard-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; 
+}
+
+    .dashboard-card ul li a {
+        color: #555;
+        text-decoration: none;
+        font-size: 1.1rem; 
+        line-height: 2;
+        transition: color 0.2s ease;
+        display: block; 
+    }
+
+        .dashboard-card ul li a:hover {
+            color: #C5A09A; 
+        }
+
+.dashboard-link {
+    text-align: right;
+    margin-top: 3rem; 
+}
+
+    .dashboard-link a {
+        text-decoration: none;
+        font-weight: 700;
+        color: #555; 
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        padding-bottom: 0.2rem;
+        transition: color 0.3s ease;
+        display: inline-block;
+        position: relative;
+        padding-right: 40px; 
+    }
+
+        .dashboard-link a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -80px; 
+            right: 25px; 
+            height: 1px;
+            border-bottom: 2px dotted #B8B3AE; 
+            z-index: 1;
+        }
+
+        .dashboard-link a::after {
+            content: '\2190'; 
+            position: absolute;
+            right: 0px; 
+            top: 50%;
+            transform: translateY(-50%) scale(1.1);
+            font-weight: bold;
+            color: #B8B3AE; 
+            z-index: 2;
+            transition: transform 0.3s;
+        }
+
+        .dashboard-link a:hover {
+            color: #3E3E3E;
+        }
+
+            .dashboard-link a:hover::after {
+                transform: translateY(-50%) translateX(-4px) scale(1.1); 
+            }
+
+@media (max-width: 768px) {
+    .dashboard-card {
+        padding: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    .dashboard-link a::before {
+        left: -40px;
+        right: 20px;
+    }
+}
+
+
+/* Styl przycisków głównych */
+.btn-primary {
+    background-color: #E8C2C6;
+    color: #4D4C4A;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    border-color: #E8C2C6;
+    margin: 0 16px 0 0;
+}
+
+    .btn-primary:hover {
+        background-color: #c49b93;
+        border-color: #c49b93;
+    }
+
+/* Style etykiet (np. Nowa / Odczytano) */
+.badge.bg-success {
+    background-color: #A2A98F !important;
+    color: #ffffff;
+}
+
+.badge.bg-secondary {
+    background-color: #4D4C4A !important;
+    color: #ffffff;
+}
+
+
+
+/* Styl dla dymka PWA */
+.pwa-install-popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border-radius: 12px;
+    padding: 15px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 9999; /* Musi być na wierzchu */
+    border: 1px solid #e0e0e0;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        bottom: -100px;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 20px;
+        opacity: 1;
+    }
+}

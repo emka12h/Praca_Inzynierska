@@ -1,0 +1,133 @@
+﻿@model GlamStudio.Models.WorkSchedule
+
+@{
+    ViewData["Title"] = "Usuń wpis z grafiku";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-header {
+            border-radius: 10px !important;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+
+        h2 {
+            font-size: 1.6rem;
+        }
+
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #333;
+            text-align: right;
+        }
+
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .order-mobile-1 {
+            order: 1;
+        }
+
+        .order-mobile-2 {
+            order: 2;
+        }
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-sm rounded-3 border border-danger">
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                    <h4 class="mb-0">Usuwanie wpisu</h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <p class="text-center text-muted mb-4">
+                        Czy na pewno chcesz usunąć ten termin z grafiku?<br />
+                        <strong class="text-danger">Tej operacji nie można cofnąć.</strong>
+                    </p>
+
+                    <div class="bg-light p-3 rounded-3 mb-4">
+                        <div class="detail-row border-bottom pb-2 mb-2">
+                            <span class="detail-label"><i class="fas fa-user me-2"></i>Pracownik</span>
+                            <span class="detail-value fw-bold text-primary">@Html.DisplayFor(model => model.Employee.FullName)</span>
+                        </div>
+
+                        <div class="detail-row border-bottom py-2">
+                            <span class="detail-label"><i class="fas fa-hourglass-start me-2"></i>Rozpoczęcie</span>
+                            <span class="detail-value">@Model.StartTime.ToString("dd.MM.yyyy, HH:mm")</span>
+                        </div>
+
+                        <div class="detail-row pt-2">
+                            <span class="detail-label"><i class="fas fa-hourglass-end me-2"></i>Zakończenie</span>
+                            <span class="detail-value">@Model.EndTime.ToString("dd.MM.yyyy, HH:mm")</span>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-flex justify-content-between action-buttons">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg order-mobile-2">
+                                Anuluj
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg shadow-sm order-mobile-1">
+                                <i class="fas fa-trash-alt me-2"></i> Usuń termin
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

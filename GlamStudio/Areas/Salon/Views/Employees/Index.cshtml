@@ -1,0 +1,212 @@
+﻿@model IEnumerable<GlamStudio.Models.EmployeeListViewModel>
+
+@{
+    ViewData["Title"] = "Zarządzanie Pracownikami";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 8px 16px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+    @@media (max-width: 991.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+            .header-mobile h1 {
+                font-size: 1.8rem;
+            }
+
+            .header-mobile .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            padding: 15px;
+        }
+
+        .mobile-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 1px solid #f8f9fa;
+            text-align: right;
+        }
+
+            .mobile-table tbody td:last-child {
+                border-bottom: none;
+                display: block;
+                padding-top: 15px;
+            }
+
+            .mobile-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #6c757d;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                text-align: left;
+                margin-right: 15px;
+            }
+
+            .mobile-table tbody td:first-child::before {
+                display: none;
+            }
+
+            .mobile-table tbody td:first-child {
+                justify-content: flex-start;
+                border-bottom: 2px solid #E8C2C6;
+                padding-bottom: 10px;
+                margin-bottom: 5px;
+            }
+
+        .action-buttons-mobile {
+            display: flex;
+            gap: 10px;
+        }
+
+            .action-buttons-mobile .btn {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+    }
+</style>
+
+<div class="container pb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 header-mobile">
+        <h1 class="mb-0 text-secondary">Zarządzanie Pracownikami</h1>
+        <a asp-action="Create" class="btn btn-glam-pink shadow-sm">
+            <i class="fas fa-user-plus me-2"></i>Dodaj pracownika
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0 mobile-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Pracownik</th>
+                        <th>Email</th>
+                        <th>Specjalizacja</th>
+                        <th>Rola</th>
+                        <th class="text-end pe-4">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td data-label="Pracownik">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-light rounded-circle d-flex justify-content-center align-items-center text-secondary fw-bold me-3" style="width: 40px; height: 40px; font-size: 0.9rem;">
+                                        @(user.FirstName?.FirstOrDefault())@(user.LastName?.FirstOrDefault())
+                                    </div>
+                                    <div>
+                                        <span class="fw-bold d-block text-dark">@Html.DisplayFor(modelItem => user.FirstName) @Html.DisplayFor(modelItem => user.LastName)</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td data-label="Email">
+                                <a href="mailto:@user.Email" class="text-decoration-none text-secondary small">@Html.DisplayFor(modelItem => user.Email)</a>
+                            </td>
+
+                            <td data-label="Specjalizacja">
+                                @if (!string.IsNullOrEmpty(user.Specialization))
+                                {
+                                    <span>@Html.DisplayFor(modelItem => user.Specialization)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">-</span>
+                                }
+                            </td>
+
+                            <td data-label="Rola">
+                                @{
+                                    var roleName = TranslateRole(user.Roles);
+                                    var badgeClass = user.Roles.Contains("Admin") ? "bg-dark" : "bg-info text-dark";
+                                }
+                                <span class="badge @badgeClass rounded-pill">@roleName</span>
+                            </td>
+
+                            <td data-label="" class="text-end">
+                                <div class="action-buttons-mobile d-flex justify-content-end gap-2">
+                                    <a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-sm btn-outline-info" title="Szczegóły">
+                                        <i class="fas fa-info-circle"></i> <span class="d-md-none ms-1">Szczegóły</span>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-sm btn-outline-secondary" title="Edytuj">
+                                        <i class="fas fa-edit"></i> <span class="d-md-none ms-1">Edytuj</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string TranslateRole(IEnumerable<string> roles)
+    {
+        if (roles.Contains("Admin"))
+        {
+            return "Właściciel / Admin";
+        }
+        if (roles.Contains("Employee"))
+        {
+            return "Pracownik";
+        }
+        if (roles.Contains("Client"))
+        {
+            return "Klient";
+        }
+        return string.Join(", ", roles);
+    }
+}

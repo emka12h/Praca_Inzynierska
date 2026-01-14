@@ -1,0 +1,118 @@
+﻿@model GlamStudio.ViewModels.OfferViewModel
+@using GlamStudio.Models
+
+@{
+    ViewData["Title"] = "Oferta Zabiegów";
+}
+
+<div class="container mt-4 mb-5">
+
+    <div class="text-center mb-4">
+        <h1 class="display-4">Nasza Oferta</h1>
+    </div>
+
+    @foreach (var category in Enum.GetValues(typeof(ServiceCategory)).Cast<ServiceCategory>())
+    {
+        if (Model.ServicesByCategory.ContainsKey(category))
+        {
+            var services = Model.ServicesByCategory[category];
+
+            <h2 class="category-title" id="@category">@category.ToString()</h2>
+
+            <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+                @foreach (var service in services)
+                {
+                    <div class="col">
+                        <a asp-action="Details" asp-route-id="@service.ServiceID" class="service-card-link">
+                            <div class="card service-card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@service.ServiceName</h5>
+                                    <p class="card-text">@service.Description</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="price">@service.Price.ToString("C")</span>
+                                    <span class="duration">@service.DurationInMinutes min</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    }
+
+</div>
+
+
+@section Scripts {
+    <style>
+        .category-title {
+            font-size: 2.5rem;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #4D4C4A;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            scroll-margin-top: 100px;
+        }
+
+        .service-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .service-card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+            .service-card-link:hover {
+                text-decoration: none;
+                color: inherit;
+            }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .service-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .service-card .card-title {
+            font-weight: 600;
+            color: #C5A09A;
+            font-size: 1.25rem;
+        }
+
+        .service-card .card-text {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .service-card .card-footer {
+            background-color: #fcfcfc;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .service-card .price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .service-card .duration {
+            font-size: 0.9rem;
+            color: #777;
+        }
+    </style>
+}

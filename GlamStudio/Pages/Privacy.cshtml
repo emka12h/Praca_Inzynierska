@@ -1,0 +1,173 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Polityka prywatności";
+}
+
+<style>
+    .policy-section-title {
+        color: #4D4C4A;
+        font-weight: 700;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        font-size: 1.25rem;
+    }
+
+    .policy-content a {
+        color: #C5A09A;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .policy-content a:hover {
+            text-decoration: underline;
+        }
+
+    .policy-content ul {
+        padding-left: 20px;
+        margin-bottom: 1rem;
+    }
+
+    .policy-content li {
+        margin-bottom: 5px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .card-body {
+            padding: 1.5rem !important;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-9">
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-5 policy-content">
+
+                    <div class="text-center mb-5">
+                        <h1 class="fw-bold text-secondary mb-2">@ViewData["Title"]</h1>
+                        <p class="text-muted small">Data ostatniej aktualizacji: 30 października 2025 r.</p>
+                    </div>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">1. Postanowienia ogólne</h2>
+                        <p>1.1. Niniejsza Polityka Prywatności określa zasady przetwarzania danych osobowych oraz wykorzystywania plików cookies w ramach aplikacji internetowej <strong>GlamStudio</strong> (dalej: „Aplikacja”).</p>
+                        <p>1.2. Administratorem danych osobowych jest <strong>[nazwa firmy]</strong>, z siedzibą w <strong>[adres firmy]</strong>, NIP: <strong>[numer NIP]</strong>, adres e-mail kontaktowy: <a href="mailto:glamstudio@gmail.com">glamstudio@gmail.com</a> (dalej: „Administrator”).</p>
+                        <p>1.3. Dane osobowe są przetwarzane zgodnie z przepisami prawa, w szczególności z RODO. Korzystanie z Aplikacji oznacza akceptację niniejszej Polityki Prywatności.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">2. Zakres zbieranych danych</h2>
+                        <ul>
+                            <li>Imię i nazwisko</li>
+                            <li>Adres e-mail</li>
+                            <li>Numer telefonu</li>
+                            <li>Dane dotyczące profilu (np. zdjęcie, opis, preferencje)</li>
+                            <li>Dane dotyczące korzystania z Aplikacji (adres IP, typ urządzenia, przeglądarka, aktywność w serwisie)</li>
+                        </ul>
+                        <p>Podanie danych jest dobrowolne, jednak niektóre funkcjonalności mogą wymagać ich podania (np. tworzenie Konta).</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">3. Cele przetwarzania danych</h2>
+                        <ul>
+                            <li>Umożliwienie korzystania z Aplikacji i jej funkcji</li>
+                            <li>Utrzymanie Konta Użytkownika</li>
+                            <li>Komunikacja z Użytkownikiem (odpowiedzi na zapytania)</li>
+                            <li>Przesyłanie informacji technicznych i powiadomień systemowych</li>
+                            <li>Zapewnienie bezpieczeństwa Aplikacji</li>
+                            <li>Tworzenie statystyk korzystania z Aplikacji w celu jej ulepszania</li>
+                        </ul>
+                        <p>Administrator nie wykorzystuje danych do profilowania ani zautomatyzowanego podejmowania decyzji.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">4. Podstawa prawna przetwarzania danych</h2>
+                        <ul>
+                            <li>Zgoda Użytkownika (art. 6 ust. 1 lit. a RODO)</li>
+                            <li>Niektóre działania niezbędne do wykonania umowy lub świadczenia usługi (art. 6 ust. 1 lit. b RODO)</li>
+                            <li>Przepisy prawa wymagają przetwarzania danych (art. 6 ust. 1 lit. c RODO)</li>
+                            <li>Uzasadnione interesy Administratora (art. 6 ust. 1 lit. f RODO), np. zapewnienie bezpieczeństwa systemu</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">5. Okres przechowywania danych</h2>
+                        <p>Dane są przechowywane przez okres niezbędny do realizacji celów, dla których zostały zebrane, lub do czasu cofnięcia zgody przez Użytkownika. Po upływie tego okresu dane są usuwane lub anonimizowane, chyba że przepisy prawa wymagają ich dłuższego przechowywania.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">6. Odbiorcy danych</h2>
+                        <p>Dane mogą być przekazywane:</p>
+                        <ul>
+                            <li>Podmiotom współpracującym w zakresie obsługi technicznej Aplikacji (hosting, IT)</li>
+                            <li>Organom publicznym, jeśli przepisy prawa tego wymagają</li>
+                        </ul>
+                        <p>Administrator nie przekazuje danych poza Europejski Obszar Gospodarczy, chyba że zapewnione są odpowiednie środki ochrony.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">7. Prawa Użytkowników</h2>
+                        <ul>
+                            <li>Dostęp do danych</li>
+                            <li>Sprostowanie danych</li>
+                            <li>Usunięcie danych („prawo do bycia zapomnianym”)</li>
+                            <li>Ograniczenie przetwarzania</li>
+                            <li>Przenoszenie danych</li>
+                            <li>Wniesienie sprzeciwu wobec przetwarzania</li>
+                            <li>Cofnięcie zgody w dowolnym momencie</li>
+                        </ul>
+                        <p>W celu realizacji swoich praw, Użytkownik może kontaktować się z Administratorem: <a href="mailto:glamstudio@gmail.com">glamstudio@gmail.com</a></p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">8. Bezpieczeństwo danych</h2>
+                        <p>Administrator stosuje środki techniczne i organizacyjne w celu ochrony danych, w tym szyfrowanie połączeń (SSL), kontrolę dostępu i systemy zabezpieczeń przed nieautoryzowanym dostępem.</p>
+                        <p>Użytkownik zobowiązany jest do zachowania poufności danych logowania.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">9. Pliki cookies</h2>
+                        <ul>
+                            <li>Prawidłowe działanie Aplikacji</li>
+                            <li>Zapamiętywanie preferencji Użytkownika</li>
+                            <li>Analiza ruchu i statystyk korzystania z Aplikacji</li>
+                        </ul>
+                        <p>Użytkownik może w każdej chwili zmienić ustawienia cookies w swojej przeglądarce. Ograniczenie stosowania cookies może wpłynąć na działanie niektórych funkcji Aplikacji.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="policy-section-title">10. Zmiany Polityki Prywatności</h2>
+                        <ul>
+                            <li>Administrator zastrzega sobie prawo do zmiany Polityki w dowolnym czasie</li>
+                            <li>Zmiany obowiązują od momentu publikacji nowej wersji w Aplikacji</li>
+                            <li>Korzystanie z Aplikacji po zmianach oznacza akceptację nowej Polityki</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 class="policy-section-title">11. Kontakt</h2>
+                        <p>W sprawach związanych z ochroną danych osobowych, Użytkownik może kontaktować się z Administratorem:</p>
+                        <div class="bg-light p-3 rounded border mt-3">
+                            <p class="mb-1">📧 <a href="mailto:glamstudio@gmail.com">glamstudio@gmail.com</a></p>
+                            <p class="mb-0">📍 <strong>[adres siedziby firmy]</strong></p>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,144 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Rejestracja";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row align-items-center">
+
+        <div class="col-lg-6 logo-main-container">
+            <img src="~/images/logo.png" alt="Glam Studio Logo Główne" class="img-fluid" />
+        </div>
+
+        <!-- Formularz rejestracji -->
+        <div class="col-lg-6">
+            <div class="contact-form-wrapper">
+                <h3>Zarejestruj się do GlamStudio!</h3>
+                <p>
+                    Aby móc umówić wizytę lub wróć do
+                    <a asp-page="/Index">Strony Głównej</a>
+                </p>
+
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.FirstName" class="form-label">Imię *</label>
+                        <input asp-for="Input.FirstName" class="form-control" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.LastName" class="form-label">Nazwisko*</label>
+                        <input asp-for="Input.LastName" class="form-control" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Email" class="form-label">Adres email*</label>
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                   
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label">Hasło*</label>
+                        <input asp-for="Input.Password" type="password" class="form-control" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Potwierdź hasło *</label>
+                        <input asp-for="Input.ConfirmPassword" type="password" class="form-control" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="Input.AcceptRules" class="form-check-input" />
+                        <label asp-for="Input.AcceptRules" class="form-check-label">
+                            Akceptuję <a asp-area="" asp-page="/Statute">Regulamin</a> oraz <a asp-area="" asp-page="/Privacy"">Politykę Prywatności</a>
+                        </label>
+                        <span asp-validation-for="Input.AcceptRules" class="text-danger"></span>
+                    </div>
+
+                    <button id="registerSubmit" type="submit" class="btn btn-glam-pink">Zarejestruj się</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .contact-form-wrapper {
+        background-color: #f4f1f1;
+        padding: 80px;
+        border-radius: 10px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .contact-form-wrapper h3 {
+        font-weight: 700;
+        font-size: 2rem;
+        color: #4D4C4A;
+        margin-bottom: 10px;
+    }
+
+    .contact-form-wrapper p {
+        font-size: 1.05rem;
+        color: #4D4C4A;
+        margin-bottom: 35px;
+    }
+
+        .contact-form-wrapper a {
+            color: #C5A09A;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+            .contact-form-wrapper a:hover {
+                color: #A47E78; 
+                text-decoration: underline; 
+            }
+
+        .contact-form-wrapper p a {
+            color: #4D4C4A; 
+            text-decoration: underline;
+        }
+
+            .contact-form-wrapper p a:hover {
+                color: #000;
+            }
+
+    .contact-form-wrapper .form-label {
+        font-weight: 600;
+        color: #4D4C4A;
+        font-size: 1.05rem;
+    }
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        border: none;
+        color: #4D4C4A;
+        padding: 12px 25px;
+        font-weight: 600;
+        width: 100%;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .btn-glam-pink:hover {
+        background-color: #d1a3a4;
+        color: #000;
+    }
+
+    .logo-main-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+    }
+</style>

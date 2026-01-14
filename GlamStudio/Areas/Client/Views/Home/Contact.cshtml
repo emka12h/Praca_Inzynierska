@@ -1,0 +1,61 @@
+﻿@model GlamStudio.ViewModels.ContactFormViewModel
+@{
+    ViewData["Title"] = "Kontakt";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row align-items-center">
+
+        <div class="col-lg-6 logo-main-container">
+            <img src="~/images/logo.png" alt="Glam Studio Logo Główne" class="img-fluid" />
+        </div>
+
+        <div class="col-lg-6">
+            <div class="contact-form-wrapper">
+                <h3>Skontaktuj się z nami!</h3>
+                <p>Jeśli masz pytania na temat zabiegu, przebiegu wizyty - napisz do nas! Odpowiemy na wszystkie Twoje pytania.</p>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success text-center" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <form asp-controller="Home" asp-action="Contact" method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="SendersName" class="form-label">Imię i Nazwisko*</label>
+                        <input asp-for="SendersName" class="form-control" readonly="@Model.IsUserLoggedIn" />
+                        <span asp-validation-for="SendersName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SendersEmail" class="form-label">Adres email*</label>
+                        <input asp-for="SendersEmail" class="form-control" readonly="@Model.IsUserLoggedIn" />
+                        <span asp-validation-for="SendersEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Contents" class="form-label">Treść wiadomości*</label>
+                        <textarea asp-for="Contents" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Contents" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-glam-pink">Wyślij wiadomość</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,52 @@
+﻿@model GlamStudio.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Usuń klienta";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4 text-danger">Usuwanie klienta</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index">Baza Klientów</a></li>
+        <li class="breadcrumb-item"><a asp-action="Edit" asp-route-id="@Model.Id">Edycja</a></li>
+        <li class="breadcrumb-item active">Usuń</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-danger shadow-lg">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="m-0"><i class="fas fa-exclamation-triangle me-2"></i> Potwierdzenie operacji</h5>
+                </div>
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-user-times fa-4x text-danger mb-3"></i>
+                    <h3 class="fw-bold">Czy na pewno chcesz usunąć to konto?</h3>
+                    <p class="lead text-muted mb-4">
+                        Klient: <strong>@Model.FirstName @Model.LastName</strong><br />
+                        Email: @Model.Email
+                    </p>
+
+                    <div class="alert alert-warning text-start d-inline-block">
+                        <i class="fas fa-info-circle me-1"></i> <strong>Uwaga:</strong>
+                        <ul class="mb-0 mt-1 small">
+                            <li>Klient straci możliwość logowania.</li>
+                            <li>Wszelkie dane osobowe zostaną usunięte z bazy.</li>
+                            <li>Jeśli klient ma przypisane wizyty, operacja może zostać zablokowana przez system bezpieczeństwa bazy danych.</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="Delete" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary px-4 me-2">
+                            Anuluj
+                        </a>
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="fas fa-trash-alt me-2"></i> Potwierdzam usunięcie
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

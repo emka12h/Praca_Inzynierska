@@ -1,0 +1,188 @@
+﻿@model GlamStudio.Areas.Salon.Models.SalonProfileViewModel
+@{
+    ViewData["Title"] = "Mój Profil";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 10px 20px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        background-color: #f8f9fa;
+        color: #C5A09A;
+        font-size: 2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 2px solid #E8C2C6;
+        flex-shrink: 0;
+    }
+
+    .border-start-md {
+        border-left: 1px solid #dee2e6 !important;
+    }
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-header-mobile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .info-row {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 1rem;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1rem;
+            border-left: none !important;
+            padding-left: 0 !important;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                padding: 12px;
+                font-size: 1rem;
+            }
+    }
+</style>
+
+<div class="container pb-5">
+    <h2 class="mb-4 text-secondary">Mój Profil</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm rounded-3">
+        <div class="card-body p-4">
+            <div class="row">
+
+                <div class="col-md-8">
+
+                    <div class="d-flex align-items-center mb-4 profile-header-mobile">
+                        <div class="profile-avatar me-md-4 mb-3 mb-md-0 shadow-sm">
+                            @(Model.FirstName?.FirstOrDefault())@(Model.LastName?.FirstOrDefault())
+                        </div>
+                        <div>
+                            <h3 class="mb-1 text-dark">@Model.FirstName @Model.LastName</h3>
+                            <p class="text-muted mb-0"><i class="far fa-envelope me-2"></i>@Model.Email</p>
+                        </div>
+                    </div>
+
+                    <hr class="d-none d-md-block opacity-25" />
+
+                    <div class="mt-4">
+
+                        <div class="info-row">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3 d-none d-md-block text-secondary" style="width: 24px;"><i class="fas fa-phone"></i></div>
+                                <div class="w-100">
+                                    <span class="info-label d-md-none">Telefon</span>
+                                    <span class="info-value">@(Model.PhoneNumber ?? "-")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3 d-none d-md-block text-secondary" style="width: 24px;"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="w-100">
+                                    <span class="info-label d-md-none">Adres</span>
+                                    <span class="info-value">@(Model.Address ?? "-")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-row border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3 d-none d-md-block text-secondary" style="width: 24px;"><i class="fas fa-city"></i></div>
+                                <div class="w-100">
+                                    <span class="info-label d-md-none">Miasto</span>
+                                    <span class="info-value">@(Model.City ?? "-")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 d-flex flex-column justify-content-center border-start-md action-buttons ps-md-4">
+                    <h5 class="d-none d-md-block text-center text-muted mb-4">Zarządzanie kontem</h5>
+
+                    <a asp-action="Edit" class="btn btn-glam-pink shadow-sm mb-3">
+                        <i class="fas fa-edit me-2"></i> Edytuj dane
+                    </a>
+
+                    <a asp-action="ChangePassword" class="btn btn-outline-secondary">
+                        <i class="fas fa-key me-2"></i> Zmień hasło
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

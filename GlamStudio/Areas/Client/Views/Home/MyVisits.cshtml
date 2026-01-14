@@ -1,0 +1,264 @@
+﻿@model IEnumerable<GlamStudio.Models.Appointment>
+@using GlamStudio.Models
+
+@{
+    ViewData["Title"] = "Moje wizyty";
+    Layout = "~/Areas/Client/Views/Shared/_Layout.cshtml";
+
+    var upcomingVisits = Model.Where(a =>
+        a.AppointmentDate.Date >= DateTime.Today &&
+        a.Status != AppointmentStatus.CancelledByClient &&
+        a.Status != AppointmentStatus.CancelledBySalon &&
+        a.Status != AppointmentStatus.NoShow &&
+        a.Status != AppointmentStatus.Completed
+    ).OrderBy(a => a.AppointmentDate).ThenBy(a => a.AppointmentTime).ToList();
+
+    var historyVisits = Model.Except(upcomingVisits)
+        .OrderByDescending(a => a.AppointmentDate)
+        .ThenByDescending(a => a.AppointmentTime)
+        .ToList();
+}
+
+<style>
+
+    .upcoming-card {
+        border: 1px solid #f0f0f0;
+        border-left: 5px solid #E8C2C6 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .upcoming-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem !important;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .btn-cancel-mobile {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 10px;
+        }
+
+        .mobile-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 5px;
+            border: none;
+            border-bottom: 1px solid #f8f9fa;
+            text-align: right;
+        }
+
+            .mobile-table tbody td:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #6c757d;
+                font-size: 0.9rem;
+                text-align: left;
+                margin-right: 15px;
+            }
+
+        .td-service-name {
+            font-weight: 700;
+            color: #333;
+        }
+    }
+</style>
+
+<div class="container py-4">
+    <h1 class="mb-4 text-center text-md-start">@ViewData["Title"]</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="mb-5">
+        <h3 class="text-secondary mb-3"><i class="fas fa-calendar-alt me-2"></i>Nadchodzące wizyty</h3>
+
+        @if (upcomingVisits.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                @foreach (var item in upcomingVisits)
+                {
+                    <div class="col">
+                        <div class="card h-100 border-0 upcoming-card">
+                            <div class="card-header bg-white border-bottom-0 d-flex justify-content-between align-items-center pt-3 pe-3 ps-3">
+                                <span class="fw-bold fs-5" style="color: #4D4C4A;">
+                                    <i class="far fa-clock me-1 text-muted"></i>
+                                    @item.AppointmentDate.ToString("dd.MM.yyyy") <small class="text-muted ms-1">@item.AppointmentTime.ToString(@"hh\:mm")</small>
+                                </span>
+                                @RenderStatusBadge(item.Status)
+                            </div>
+                            <div class="card-body pt-1">
+                                <h5 class="card-title fw-bold mb-3" style="color: #E8C2C6;">@item.Service.ServiceName</h5>
+
+                                <div class="d-flex flex-column gap-1 mb-3">
+                                    <div class="text-muted">
+                                        <i class="fas fa-user-nurse me-2 text-center" style="width: 20px;"></i>
+                                        Specjalista: <strong class="text-dark">@item.Employee.FirstName @item.Employee.LastName</strong>
+                                    </div>
+                                    <div class="text-muted">
+                                        <i class="fas fa-hourglass-half me-2 text-center" style="width: 20px;"></i>
+                                        Czas: @item.Service.DurationInMinutes min
+                                    </div>
+                                    <div class="text-muted">
+                                        <i class="fas fa-tag me-2 text-center" style="width: 20px;"></i>
+                                        Cena: <strong class="text-dark">@item.Service.Price.ToString("C")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-top-0 pb-3 text-end">
+                                <form asp-area="Client" asp-controller="Home" asp-action="CancelAppointment" method="post"
+                                      onsubmit="return confirm('Czy na pewno chcesz anulować tę wizytę?');">
+
+                                    <input type="hidden" name="id" value="@item.AppointmentID" />
+
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-cancel-mobile rounded-3">
+                                        <i class="fas fa-times me-1"></i> Anuluj wizytę
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-light border text-center py-5 rounded-3 shadow-sm">
+                <div class="mb-3 text-muted display-6"><i class="far fa-calendar"></i></div>
+                <p class="mb-3 fw-bold text-muted">Nie masz żadnych zaplanowanych wizyt.</p>
+                <a asp-controller="Booking" asp-action="Create" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm" style="background-color: #E8C2C6; border: none; color: #4D4C4A;">
+                    <i class="fas fa-plus me-2"></i>Umów nową wizytę
+                </a>
+            </div>
+        }
+    </div>
+
+    <hr class="text-muted my-5" />
+
+    <div class="mt-4">
+        <h3 class="text-secondary mb-3"><i class="fas fa-history me-2"></i>Historia wizyt</h3>
+
+        @if (historyVisits.Any())
+        {
+            <div class="table-responsive-md">
+                <table class="table table-hover align-middle mobile-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data</th>
+                            <th>Godzina</th>
+                            <th>Zabieg</th>
+                            <th>Specjalista</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in historyVisits)
+                        {
+                            <tr>
+                                <td data-label="Data">
+                                    <span class="fw-bold text-dark">@item.AppointmentDate.ToString("dd.MM.yyyy")</span>
+                                </td>
+                                <td data-label="Godzina">
+                                    @item.AppointmentTime.ToString(@"hh\:mm")
+                                </td>
+                                <td data-label="Zabieg" class="td-service-name">
+                                    @item.Service.ServiceName
+                                </td>
+                                <td data-label="Specjalista">
+                                    @item.Employee.FirstName @item.Employee.LastName
+                                </td>
+                                <td data-label="Status">
+                                    @RenderStatusBadge(item.Status)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted text-center py-3">Brak historii wizyt.</p>
+        }
+    </div>
+</div>
+
+@functions {
+    public Microsoft.AspNetCore.Html.IHtmlContent RenderStatusBadge(AppointmentStatus status)
+    {
+        string badgeClass = "bg-secondary";
+        string statusText = "";
+
+        switch (status)
+        {
+            case AppointmentStatus.Scheduled:
+                badgeClass = "bg-info text-dark";
+                statusText = "Zaplanowana";
+                break;
+            case AppointmentStatus.Confirmed:
+                badgeClass = "bg-success";
+                statusText = "Potwierdzona";
+                break;
+            case AppointmentStatus.Completed:
+                badgeClass = "bg-secondary";
+                statusText = "Zakończona";
+                break;
+            case AppointmentStatus.CancelledByClient:
+                badgeClass = "bg-warning text-dark";
+                statusText = "Anulowana (Ty)";
+                break;
+            case AppointmentStatus.CancelledBySalon:
+                badgeClass = "bg-danger";
+                statusText = "Anulowana (Salon)";
+                break;
+            case AppointmentStatus.NoShow:
+                badgeClass = "bg-dark";
+                statusText = "Nieobecność";
+                break;
+        }
+
+        return Html.Raw($"<span class='badge {badgeClass} rounded-pill px-3 py-2'>{statusText}</span>");
+    }
+}

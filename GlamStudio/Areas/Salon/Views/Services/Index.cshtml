@@ -1,0 +1,192 @@
+﻿@model IEnumerable<GlamStudio.Models.Service>
+@using GlamStudio.Models
+
+@{
+    ViewData["Title"] = "Zarządzanie usługami";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 8px 16px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+
+        .header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+            .header-mobile .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            padding: 15px;
+        }
+
+        .mobile-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 1px solid #f8f9fa;
+            text-align: right;
+        }
+
+            .mobile-table tbody td:last-child {
+                border-bottom: none;
+                display: block;
+                padding-top: 15px;
+            }
+
+            .mobile-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #6c757d;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                text-align: left;
+                margin-right: 15px;
+            }
+
+        .td-name {
+            display: block !important;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            text-align: left !important;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #E8C2C6 !important;
+            padding-bottom: 10px !important;
+        }
+
+            .td-name::before {
+                display: none;
+            }
+
+        .action-buttons-mobile {
+            display: flex;
+            gap: 10px;
+        }
+
+            .action-buttons-mobile .btn {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+    }
+</style>
+
+<div class="container pb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 header-mobile">
+        <h1 class="mb-0 text-secondary">Zarządzanie usługami</h1>
+        <a asp-action="Create" class="btn btn-glam-pink shadow-sm">
+            <i class="fas fa-plus me-2"></i>Dodaj nową usługę
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0 mobile-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.ServiceName)</th>
+                        <th>@Html.DisplayNameFor(model => model.Category)</th>
+                        <th>@Html.DisplayNameFor(model => model.Price)</th>
+                        <th>@Html.DisplayNameFor(model => model.DurationInMinutes)</th>
+                        <th class="text-end pe-4">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-box-open fa-3x mb-3"></i>
+                                <p>Brak usług w bazie.</p>
+                            </td>
+                        </tr>
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="td-name" data-label="Usługa">
+                                @Html.DisplayFor(modelItem => item.ServiceName)
+                            </td>
+
+                            <td data-label="Kategoria">
+                                <span class="badge bg-secondary rounded-pill">@Html.DisplayFor(modelItem => item.Category)</span>
+                            </td>
+
+                            <td data-label="Cena">
+                                <span class="fw-bold text-success">@item.Price.ToString("C")</span>
+                            </td>
+
+                            <td data-label="Czas trwania">
+                                @item.DurationInMinutes <small class="text-muted">min</small>
+                            </td>
+
+                            <td data-label="" class="text-end">
+                                <div class="action-buttons-mobile d-flex justify-content-end gap-2">
+                                    <a asp-action="Details" asp-route-id="@item.ServiceID" class="btn btn-sm btn-outline-info" title="Szczegóły">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.ServiceID" class="btn btn-sm btn-outline-primary" title="Edytuj">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.ServiceID" class="btn btn-sm btn-outline-danger" title="Usuń">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

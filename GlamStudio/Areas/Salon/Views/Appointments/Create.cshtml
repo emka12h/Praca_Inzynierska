@@ -1,0 +1,287 @@
+﻿@model GlamStudio.Areas.Salon.Models.ManualBookingViewModel
+
+@{
+    ViewData["Title"] = "Nowa Rezerwacja";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 10px 20px;
+    }
+
+        .btn-glam-pink:hover, .btn-glam-pink:active {
+            background-color: #d4a6ab !important;
+            color: #222 !important;
+        }
+
+        .btn-glam-pink:disabled {
+            background-color: #e9ecef;
+            color: #adb5bd;
+        }
+
+    .time-slot-btn {
+        min-width: 80px;
+        padding: 10px 5px;
+        text-align: center;
+        border: 1px solid #C5A09A;
+        color: #C5A09A;
+        background-color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+        user-select: none;
+    }
+
+        .time-slot-btn:hover {
+            background-color: #fcf5f4;
+            transform: translateY(-2px);
+        }
+
+        .time-slot-btn.active {
+            background-color: #C5A09A;
+            color: white;
+            border-color: #C5A09A;
+            box-shadow: 0 4px 10px rgba(197, 160, 154, 0.4);
+            transform: translateY(0);
+        }
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .form-select, .form-control {
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        #slots-container {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px !important;
+        }
+
+        .time-slot-btn {
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                padding: 12px;
+            }
+    }
+</style>
+
+<div class="container pb-5">
+    <h2 class="mb-4 text-secondary"><i class="fas fa-calendar-plus me-2"></i>Ręczna Rezerwacja</h2>
+
+    <div class="card shadow-sm rounded-3">
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 mb-4"></div>
+
+                <div class="mb-4">
+                    <label asp-for="ClientId" class="form-label fw-bold text-muted small text-uppercase ls-1">1. Klient</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-user text-muted"></i></span>
+                        <select asp-for="ClientId" class="form-select border-start-0 ps-0" asp-items="Model.ClientsList" id="SelectClient">
+                            <option value="" disabled selected>-- Wybierz klienta --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="ClientId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ServiceId" class="form-label fw-bold text-muted small text-uppercase ls-1">2. Usługa</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-cut text-muted"></i></span>
+                        <select asp-for="ServiceId" class="form-select border-start-0 ps-0" asp-items="Model.ServicesList" id="ServiceId">
+                            <option value="" disabled selected>-- Wybierz usługę --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="ServiceId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="EmployeeId" class="form-label fw-bold text-muted small text-uppercase ls-1">3. Specjalista</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-user-nurse text-muted"></i></span>
+                        <select asp-for="EmployeeId" class="form-select border-start-0 ps-0" id="EmployeeId" disabled>
+                            <option value="" disabled selected>-- Najpierw wybierz usługę --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Date" class="form-label fw-bold text-muted small text-uppercase ls-1">4. Data wizyty</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
+                        <input asp-for="Date" class="form-control border-start-0 ps-0" type="date" id="Date" />
+                    </div>
+                    <span asp-validation-for="Date" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted small text-uppercase ls-1">5. Dostępne godziny</label>
+
+                    <div id="slots-loader" class="d-none text-center py-3 bg-light rounded-3 mb-2">
+                        <div class="spinner-border text-secondary spinner-border-sm" role="status"></div>
+                        <span class="text-muted ms-2 small">Szukam terminów...</span>
+                    </div>
+
+                    <div id="slots-container" class="d-flex flex-wrap gap-2">
+                        <div class="alert alert-light border w-100 text-center text-muted small">
+                            Uzupełnij powyższe dane, aby zobaczyć godziny.
+                        </div>
+                    </div>
+
+                    <input type="hidden" asp-for="Time" id="selectedTime" />
+                    <span asp-validation-for="Time" class="text-danger d-block mt-2 fw-bold small"></span>
+                </div>
+
+                <div class="mt-5 d-flex justify-content-between action-buttons">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg order-2 order-md-1">
+                        Anuluj
+                    </a>
+                    <button type="submit" class="btn btn-glam-pink btn-lg order-1 order-md-2" id="submitBtn" disabled>
+                        <i class="fas fa-check me-2"></i> Zapisz wizytę
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            const $service = $('#ServiceId');
+            const $employee = $('#EmployeeId');
+            const $date = $('#Date');
+            const $container = $('#slots-container');
+            const $loader = $('#slots-loader');
+            const $input = $('#selectedTime');
+            const $btn = $('#submitBtn');
+
+            $service.change(function() {
+                var serviceId = $(this).val();
+
+                $employee.empty().append('<option value="" disabled selected>-- Wybierz specjalistę --</option>').prop('disabled', true);
+                $container.html('<div class="alert alert-light border w-100 text-center text-muted small">Wybierz specjalistę.</div>');
+                $input.val('');
+                $btn.prop('disabled', true);
+
+                if (!serviceId) return;
+
+                $.ajax({
+                    url: '@Url.Action("GetEmployeesByService", "Appointments", new { Area = "Salon" })',
+                    data: { serviceId: serviceId },
+                    success: function(data) {
+                        if (data.length === 0) {
+                            $employee.append('<option value="" disabled>Brak specjalistów dla tego zabiegu</option>');
+                        } else {
+                            $.each(data, function(i, item) {
+                                $employee.append($('<option>', {
+                                    value: item.value,
+                                    text : item.text
+                                }));
+                            });
+                            $employee.prop('disabled', false);
+                        }
+                    },
+                    error: function() {
+                        alert('Błąd podczas pobierania listy specjalistów.');
+                    }
+                });
+            });
+
+
+            function loadSlots() {
+                const sId = $service.val();
+                const eId = $employee.val();
+                const dt = $date.val();
+
+                $input.val('');
+                $btn.prop('disabled', true);
+
+                if(!sId || !eId || !dt) {
+                    if(sId && eId && !dt) {
+                         $container.html('<div class="alert alert-light border w-100 text-center text-muted small">Wybierz datę.</div>');
+                    }
+                    return;
+                }
+
+                $container.empty();
+                $loader.removeClass('d-none');
+
+                $.ajax({
+                    url: '@Url.Action("GetAvailableTimeSlots", "Appointments", new { Area = "Salon" })',
+                    data: { employeeId: eId, serviceId: sId, date: dt },
+                    success: function(data) {
+                        $loader.addClass('d-none');
+
+                        if(data.length === 0) {
+                            $container.html('<div class="alert alert-warning w-100 text-center small"><i class="fas fa-exclamation-circle me-1"></i>Brak wolnych terminów.</div>');
+                            return;
+                        }
+
+                        data.forEach(t => {
+                            const el = $(`<div class="time-slot-btn">${t}</div>`);
+                            el.click(function() {
+                                $('.time-slot-btn').removeClass('active');
+                                $(this).addClass('active');
+                                $input.val(t);
+                                $btn.prop('disabled', false);
+                            });
+                            $container.append(el);
+                        });
+                    },
+                    error: function() {
+                        $loader.addClass('d-none');
+                        $container.html('<div class="alert alert-danger w-100 text-center small">Błąd pobierania danych.</div>');
+                    }
+                });
+            }
+
+            $employee.change(loadSlots);
+            $date.change(loadSlots);
+        });
+    </script>
+}

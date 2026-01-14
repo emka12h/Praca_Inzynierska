@@ -1,0 +1,154 @@
+﻿@model GlamStudio.Areas.Salon.Models.WorkScheduleCreateViewModel
+@using GlamStudio.Models
+
+@{
+    ViewData["Title"] = "Dodaj nowy termin pracy";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 12px 20px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+        }
+
+
+        .header-row {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 10px;
+            margin-bottom: 1.5rem !important;
+        }
+
+            .header-row .btn {
+                width: 100%;
+            }
+
+
+        .form-control-lg, .form-select-lg {
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .order-mobile-1 {
+            order: 1;
+        }
+
+        .order-mobile-2 {
+            order: 2;
+        }
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 header-row">
+                <h2 class="mb-0 text-secondary">Nowy termin</h2>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Powrót do grafiku
+                </a>
+            </div>
+
+            <div class="card shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <form asp-controller="WorkSchedules" asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 mb-4"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="ApplicationUserId" class="form-label fw-bold text-muted small text-uppercase ls-1">Pracownik</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-user text-muted"></i></span>
+                                <select asp-for="ApplicationUserId" class="form-select form-select-lg border-start-0 ps-0" asp-items="Model.EmployeeList ?? Enumerable.Empty<SelectListItem>()">
+                                    <option value="">-- Wybierz pracownika --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="ApplicationUserId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Date" class="form-label fw-bold text-muted small text-uppercase ls-1">Data</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
+                                <input asp-for="Date" class="form-control form-control-lg border-start-0 ps-0" type="date" />
+                            </div>
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ShiftType" class="form-label fw-bold text-muted small text-uppercase ls-1">Rodzaj zmiany</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-clock text-muted"></i></span>
+                                <select asp-for="ShiftType" class="form-select form-select-lg border-start-0 ps-0" asp-items="Html.GetEnumSelectList<ShiftType>()">
+                                    <option value="">-- Wybierz zmianę --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="ShiftType" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between action-buttons mt-5">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg order-mobile-2">
+                                Anuluj
+                            </a>
+                            <button type="submit" class="btn btn-glam-pink btn-lg shadow-sm order-mobile-1">
+                                <i class="fas fa-plus-circle me-2"></i> Dodaj do grafiku
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

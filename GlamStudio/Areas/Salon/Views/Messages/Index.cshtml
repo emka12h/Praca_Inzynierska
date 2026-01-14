@@ -1,0 +1,169 @@
+﻿@model IEnumerable<GlamStudio.Models.Message>
+@{
+    ViewData["Title"] = "Wiadomości od klientów";
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 8px 16px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-top: 1rem;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+        }
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            padding: 15px;
+            position: relative;
+        }
+
+            .mobile-table tbody tr[style*="font-weight: bold"] {
+                border-left: 5px solid #198754;
+                background-color: #f8fff9;
+            }
+
+            .mobile-table tbody tr:not([style*="font-weight: bold"]) {
+                border-left: 5px solid #adb5bd;
+            }
+
+        .mobile-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border: none;
+            text-align: right;
+            font-size: 0.95rem;
+        }
+
+            .mobile-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #6c757d;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                text-align: left;
+                margin-right: 15px;
+            }
+
+            .mobile-table tbody td:last-child {
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid #f0f0f0;
+                display: block;
+                .mobile-table tbody td:last-child::before
+
+    {
+        display: none;
+    }
+
+    .btn-action-mobile {
+        width: 100%;
+        display: block;
+    }
+
+    .mobile-status-cell {
+        justify-content: flex-end;
+    }
+
+    }
+</style>
+
+<div class="container pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="mb-0 text-secondary">Skrzynka odbiorcza</h1>
+            <p class="text-muted small mb-0">Wiadomości z formularza kontaktowego</p>
+        </div>
+        <div class="d-none d-md-block">
+            <span class="badge bg-light text-dark border"><i class="fas fa-inbox me-1"></i> Ilość: @Model.Count()</span>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light text-center border py-5">
+            <i class="far fa-envelope-open fa-3x text-muted mb-3"></i>
+            <p class="h5 text-muted">Brak wiadomości.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0 mobile-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Status</th>
+                            <th>Data</th>
+                            <th>Nadawca</th>
+                            <th>Email</th>
+                            <th class="text-end pe-4">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+
+                            <tr style="@(item.IsReadBySalon ? "font-weight: normal;" : "font-weight: bold;")">
+                                <td data-label="Status" class="mobile-status-cell">
+                                    @if (item.IsReadBySalon)
+                                    {
+                                        <span class="badge bg-secondary rounded-pill px-3">Odczytano</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3 shadow-sm">Nowa</span>
+                                    }
+                                </td>
+                                <td data-label="Data">
+                                    <span class="text-muted small">@item.DateSent.ToString("dd.MM.yyyy, HH:mm")</span>
+                                </td>
+                                <td data-label="Nadawca">
+                                    <span class="text-dark">@Html.DisplayFor(modelItem => item.SendersName)</span>
+                                </td>
+                                <td data-label="Email">
+                                    <a href="mailto:@item.SendersEmail" class="text-decoration-none text-secondary small">
+                                        @Html.DisplayFor(modelItem => item.SendersEmail)
+                                    </a>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.MessageId" class="btn btn-sm btn-glam-pink btn-action-mobile shadow-sm">
+                                        <i class="fas fa-envelope-open-text me-2"></i> Otwórz
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

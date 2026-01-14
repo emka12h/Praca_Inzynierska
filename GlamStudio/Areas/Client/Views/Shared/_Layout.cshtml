@@ -1,0 +1,290 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using GlamStudio.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GlamStudio</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/GlamStudio.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <link rel="manifest" href="~/manifest.json" />
+
+    <meta name="theme-color" content="#C5A09A" />
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GlamStudio" />
+    <link rel="apple-touch-icon" href="~/images/icons/icon-192x192.png" />
+
+    <link rel="icon" type="image/png" sizes="192x192" href="~/images/icons/icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="~/images/icons/icon-512x512.png" />
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .navbar-custom {
+            background-color: #C5A09A;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .navbar-brand img {
+            height: clamp(60px, 10vw, 120px);
+            width: auto;
+            max-width: 100%;
+            border-radius:5px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+            opacity: 1 !important; 
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+
+            .navbar-nav .nav-link:hover {
+                color: #ffffff !important; 
+                opacity: 0.7 !important;
+            }
+
+        .nav-link.btn-link {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-decoration: none;
+            background-color: transparent;
+            border: none;
+            text-align: left;
+        }
+
+            .nav-link.btn-link:hover {
+                color: #ffffff !important; 
+                opacity: 0.7 !important;
+            }
+
+        .footer-custom {
+            background-color: #C5A09A;
+            padding: 20px 0;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+            .footer-custom a {
+                color: #FFFFFF;
+                text-decoration: none;
+            }
+
+                .footer-custom a:hover {
+                    color: #eee;
+                    text-decoration: underline;
+                }
+
+        @@media(max - width: 991.98px)
+
+        {
+            .navbar-collapse
+
+        {
+            text-align: center;
+            background-color: #C5A09A;
+            padding: 1rem 0;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .navbar-nav .nav-item {
+            margin: 0.5rem 0;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
+            <div class="container-fluid px-4">
+
+                @if (ViewContext.RouteData.Values["action"]?.ToString() != "Index")
+                {
+                    <a href="javascript:history.back()"
+                       class="btn btn-link text-dark me-3 d-none d-lg-block text-decoration-none"
+                       title="Wróć do poprzedniej strony">
+                        <i class="fas fa-arrow-left fa-lg"></i>
+                    </a>
+                }
+                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                    <img src="~/images/logo_menu_nawigacyjne.png" alt="GlamStudio Logo" />
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item mx-3">
+                            <a class="nav-link fw-semibold" asp-area="Client" asp-controller="Home" asp-action="Index">Strona główna</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link fw-semibold" asp-area="Client" asp-controller="Home" asp-action="AboutUs">O nas</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link fw-semibold" asp-area="Client" asp-controller="Offer" asp-action="Index">Nasza oferta</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link fw-semibold" asp-area="Client" asp-controller="Home" asp-action="Contact">Kontakt</a>
+                        </li>
+
+                        <li class="nav-item mx-3">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a class="nav-link fw-semibold" asp-area="Client" asp-controller="Booking" asp-action="Create">
+                                    Umów wizytę
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link fw-semibold" asp-area="Identity" asp-page="/Account/Login"
+                                   asp-route-returnUrl="@Url.Action("Create", "Booking", new { area = "Client" })">
+                                    Umów wizytę
+                                </a>
+                            }
+                        </li>
+
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item mx-3">
+                                <a class="nav-link fw-semibold" asp-area="Client" asp-controller="Home" asp-action="Profile">
+                                    Moje konto
+                                </a>
+                            </li>
+                            <li class="nav-item mx-3">
+                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+                                      asp-route-returnUrl="@Url.Page("/Index", new { area = "" })"
+                                      method="post">
+
+                                    <button type="submit" class="nav-link btn-link border-0">Wyloguj się</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item mx-3">
+                                <a class="nav-link fw-semibold" asp-area="Identity" asp-page="/Account/Register" asp-route-type="client">Załóż konto</a>
+                            </li>
+                            <li class="nav-item mx-3">
+                                <a class="nav-link fw-semibold" asp-area="Identity" asp-page="/Account/Login" asp-route-type="client">Zaloguj się</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="pb-3 container">
+        @RenderBody()
+    </main>
+
+    <footer class="footer-custom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-start mb-2 mb-md-0">
+                    <a asp-area="" asp-page="/Statute">Regulamin</a>
+                </div>
+
+                <div class="col-md-4 text-center mb-2 mb-md-0">
+                    &copy; 2025 GlamStudio, Wszelkie prawa zastrzeżone
+                </div>
+
+                <div class="col-md-4 text-center text-md-end">
+                    <a asp-area="" asp-page="/Privacy">Polityka Prywatności</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="pwa-install-prompt" class="pwa-install-popup shadow-lg" style="display: none;">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <img src="~/images/icons/icon-192x192.png" alt="Logo" style="width: 50px; height: 50px; border-radius: 10px; margin-right: 15px;">
+                <div>
+                    <h6 class="mb-0 fw-bold">Zainstaluj GlamStudio</h6>
+                    <small class="text-muted">Dodaj aplikację do ekranu głównego</small>
+                </div>
+            </div>
+            <div class="ms-3">
+                <button id="pwa-install-btn" class="btn btn-sm btn-glam-pink text-nowrap">Zainstaluj</button>
+                <button id="pwa-dismiss-btn" class="btn btn-sm btn-link text-muted"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker.register("/service-worker.js")
+                    .then(() => console.log("Service Worker zarejestrowany"))
+                    .catch(err => console.error("Błąd Service Workera:", err));
+            });
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwa-install-prompt').style.display = 'block';
+        });
+
+
+        document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+
+                deferredPrompt = null;
+
+                document.getElementById('pwa-install-prompt').style.display = 'none';
+            }
+        });
+
+        document.getElementById('pwa-dismiss-btn').addEventListener('click', () => {
+            document.getElementById('pwa-install-prompt').style.display = 'none';
+        });
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,217 @@
+﻿@using GlamStudio.Models
+@using Microsoft.AspNetCore.Identity
+@model GlamStudio.Models.Service
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = Model.ServiceName;
+    Layout = "~/Areas/Client/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: #f4f4f5;
+        font-family: "Inter", sans-serif;
+    }
+
+    .details-wrapper {
+        max-width: 1000px;
+        margin: 4rem auto;
+        padding: 0 20px;
+    }
+
+    .details-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 3rem 4rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        animation: fadeIn 0.5s ease;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .service-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        line-height: 1.2; 
+    }
+
+    .service-category {
+        text-align: center;
+        color: #A9858A;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 2.5rem;
+    }
+
+    .info-box {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+        border-radius: 12px;
+        background: #fafafa;
+        border: 1px solid #eee;
+        margin-bottom: 2.5rem;
+    }
+
+    .info-item {
+        text-align: center;
+    }
+
+        .info-item .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #3E3D3C;
+            display: block; 
+
+        .info-item .label {
+            margin-top: 0.2rem;
+            font-size: 0.9rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+    .service-description {
+        font-size: 1.15rem;
+        color: #555;
+        line-height: 1.9;
+        margin-bottom: 3rem;
+        text-align: justify; 
+    }
+
+    .details-actions {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        border: none;
+        transition: 0.3s ease;
+        text-decoration: none; 
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+    }
+
+        .btn-primary:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+    .btn-secondary {
+        background-color: #5f6468;
+        color: #fff;
+    }
+
+        .btn-secondary:hover {
+            background-color: #4c5257;
+            color: #fff;
+        }
+
+    @@media (max-width: 768px) {
+        .details-wrapper {
+            margin: 2rem auto; 
+            padding: 0 15px; 
+        }
+
+        .details-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .service-title {
+            font-size: 2rem; 
+        }
+
+        .info-box {
+            gap: 1.5rem;
+            padding: 1.5rem;
+            grid-template-columns: 1fr; 
+        }
+
+        .info-item .value {
+            font-size: 1.8rem;
+        }
+
+        .service-description {
+            font-size: 1rem; 
+            text-align: left; 
+        }
+
+        .details-actions {
+            flex-direction: column; 
+            gap: 15px;
+        }
+
+        .btn-primary, .btn-secondary {
+            width: 100%; 
+            padding: 1rem; 
+        }
+    }
+</style>
+
+<div class="details-wrapper">
+    <div class="details-card">
+
+        <h1 class="service-title">@Model.ServiceName</h1>
+        <p class="service-category">@Model.Category.ToString()</p>
+
+        <div class="info-box">
+            <div class="info-item">
+                <span class="value">@Model.Price.ToString("C")</span>
+                <span class="label">Cena</span>
+            </div>
+            <div class="info-item">
+                <span class="value">@Model.Duration.TotalMinutes min</span>
+                <span class="label">Czas trwania</span>
+            </div>
+        </div>
+
+        <div class="service-description">
+            <p>@Model.Description</p>
+        </div>
+
+        <div class="details-actions">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                // UŻYTKOWNIK ZALOGOWANY -> Idź prosto do rezerwacji
+                <a asp-area="Client" asp-controller="Booking" asp-action="Create" asp-route-serviceId="@Model.ServiceID" class="btn btn-primary btn-lg">
+                    Umów się na wizytę
+                </a>
+            }
+            else
+            {
+                // UŻYTKOWNIK NIEZALOGOWANY -> Idź do logowania z ReturnUrl ustawionym na rezerwację
+                <a asp-area="Identity" asp-page="/Account/Login"
+                   asp-route-returnUrl="@Url.Action("Create", "Booking", new { area = "Client", serviceId = Model.ServiceID })"
+                   class="btn btn-primary btn-lg">
+                    Umów się na wizytę
+                </a>
+            }
+
+            <a asp-action="Index" class="btn btn-secondary btn-lg">Powrót do oferty</a>
+        </div>
+    </div>
+</div>

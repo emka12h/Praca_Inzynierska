@@ -1,0 +1,154 @@
+﻿@model GlamStudio.Models.Service
+@using GlamStudio.Models
+
+@{
+    ViewData["Title"] = "Szczegóły usługi";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 10px 25px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-header {
+            background: transparent !important;
+            border-bottom: 2px solid #f0f0f0;
+            padding-left: 0;
+            padding-right: 0;
+            margin-bottom: 1rem;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 2rem;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .order-mobile-1 {
+            order: 1;
+        }
+
+        .order-mobile-2 {
+            order: 2;
+        }
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-sm rounded-3">
+
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-0 text-secondary">@Model.ServiceName</h2>
+                        <span class="badge bg-secondary rounded-pill mt-2">@Model.Category</span>
+                    </div>
+                    <div class="d-none d-md-block text-muted">
+                        <i class="fas fa-info-circle fa-2x opacity-25"></i>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <div class="row mb-4">
+                        <div class="col-6 detail-item">
+                            <span class="detail-label text-muted small text-uppercase fw-bold"><i class="fas fa-tag me-1"></i> Cena</span>
+                            <div class="detail-value fs-4 text-success fw-bold">@Model.Price.ToString("C")</div>
+                        </div>
+                        <div class="col-6 detail-item">
+                            <span class="detail-label text-muted small text-uppercase fw-bold"><i class="fas fa-clock me-1"></i> Czas trwania</span>
+                            <div class="detail-value fs-4 text-dark">@Model.DurationInMinutes <small class="fs-6 text-muted fw-normal">min</small></div>
+                        </div>
+                    </div>
+
+                    <hr class="text-muted opacity-25 mb-4">
+
+                    <div class="detail-item">
+                        <span class="detail-label text-muted small text-uppercase fw-bold mb-2 d-block">Opis usługi</span>
+                        <div class="detail-value text-secondary" style="line-height: 1.6;">
+                            @if (!string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Model.Description
+                            }
+                            else
+                            {
+                                <span class="fst-italic text-muted">Brak dodatkowego opisu.</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between action-buttons mt-5">
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg order-mobile-2">
+                            <i class="fas fa-arrow-left me-2"></i> Powrót
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.ServiceID" class="btn btn-glam-pink btn-lg shadow-sm order-mobile-1">
+                            <i class="fas fa-edit me-2"></i> Edytuj
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

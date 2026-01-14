@@ -1,0 +1,146 @@
+﻿@model GlamStudio.Models.Service
+@using GlamStudio.Models
+
+@{
+    ViewData["Title"] = "Usuń usługę";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-header {
+            border-radius: 10px !important;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 0 !important;
+        }
+
+
+        h2 {
+            font-size: 1.6rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .order-mobile-1 {
+            order: 1;
+        }
+
+        .order-mobile-2 {
+            order: 2;
+        }
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-sm rounded-3 border border-danger">
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <h4 class="mb-0">Potwierdzenie usunięcia</h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <p class="text-center text-muted mb-4">
+                        Czy na pewno chcesz trwale usunąć tę usługę?<br />
+                        <strong class="text-danger">Tej operacji nie można cofnąć.</strong>
+                    </p>
+
+                    <div class="bg-light p-3 rounded-3 mb-4">
+                        <h3 class="text-center text-dark mb-3 fw-bold">@Model.ServiceName</h3>
+
+                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                            <span class="text-muted"><i class="fas fa-list me-2"></i>Kategoria</span>
+                            <span class="fw-bold">@Model.Category</span>
+                        </div>
+
+                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                            <span class="text-muted"><i class="fas fa-tag me-2"></i>Cena</span>
+                            <span class="fw-bold text-success">@Model.Price.ToString("C")</span>
+                        </div>
+
+                        <div class="detail-row d-flex justify-content-between py-2">
+                            <span class="text-muted"><i class="fas fa-clock me-2"></i>Czas trwania</span>
+                            <span class="fw-bold">@Model.DurationInMinutes min</span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning d-flex align-items-center small mb-4" role="alert">
+                        <i class="fas fa-info-circle fa-lg me-3"></i>
+                        <div>
+                            <strong>Uwaga:</strong> Jeśli usługa jest przypisana do przyszłych wizyt, jej usunięcie może zostać zablokowane przez system.
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete">
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                        }
+
+                        <input type="hidden" asp-for="ServiceID" />
+
+                        <div class="d-flex justify-content-between action-buttons">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg order-mobile-2">
+                                Anuluj
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg shadow-sm order-mobile-1">
+                                <i class="fas fa-trash-alt me-2"></i> Usuń trwale
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

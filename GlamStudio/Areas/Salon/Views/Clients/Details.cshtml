@@ -1,0 +1,166 @@
+﻿@model GlamStudio.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Karta Klienta";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+
+    var appointments = Model.ClientAppointments?.OrderByDescending(a => a.AppointmentDate).ToList() ?? new List<GlamStudio.Models.Appointment>();
+}
+
+<style>
+
+    @@media (max-width: 767.98px) {
+        .page-header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+            .page-header-mobile .btn-group-mobile {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .page-header-mobile .btn {
+                width: 100%;
+            }
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .mobile-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .mobile-table tbody td:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #6c757d;
+                margin-right: 1rem;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+            }
+
+            .mobile-table tbody td span,
+            .mobile-table tbody td {
+                text-align: right;
+            }
+    }
+</style>
+
+<div class="container pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header-mobile">
+        <h2 class="mb-0">@Model.FirstName @Model.LastName</h2>
+        <div class="btn-group-mobile">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edytuj dane
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">Powrót</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-light fw-bold">Dane kontaktowe</div>
+                <div class="card-body">
+                    <p class="mb-2"><i class="fas fa-envelope me-2 text-muted"></i> <a href="mailto:@Model.Email" class="text-decoration-none text-dark">@Model.Email</a></p>
+                    <p class="mb-2"><i class="fas fa-phone me-2 text-muted"></i> <a href="tel:@Model.PhoneNumber" class="text-decoration-none text-dark">@(Model.PhoneNumber ?? "-")</a></p>
+                    <p class="mb-0"><i class="fas fa-map-marker-alt me-2 text-muted"></i> @(Model.Address ?? "-"), @(Model.City ?? "-")</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-warning mb-4 mb-md-0">
+                <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-sticky-note me-1"></i> Notatki Salonu</span>
+                </div>
+                <div class="card-body bg-light">
+                    @if (!string.IsNullOrWhiteSpace(Model.SalonNotes))
+                    {
+                        <p style="white-space: pre-wrap;" class="mb-2">@Model.SalonNotes</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted fst-italic mb-2">Brak notatek.</p>
+                    }
+                    <div class="text-end border-top pt-2 mt-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark w-100 w-md-auto">Edytuj notatki</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">Historia Wizyt</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 mobile-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Zabieg</th>
+                                <th>Specjalista</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (appointments.Any())
+                            {
+                                foreach (var app in appointments)
+                                {
+                                    <tr>
+                                        <td data-label="Data">
+                                            @app.AppointmentDate.ToString("dd.MM.yyyy HH:mm")
+                                        </td>
+                                        <td data-label="Zabieg">
+                                            @app.Service.ServiceName
+                                        </td>
+                                        <td data-label="Specjalista">
+                                            @app.Employee.FirstName @app.Employee.LastName
+                                        </td>
+                                        <td data-label="Status">
+                                            @{
+                                                var badgeClass = app.Status.ToString() == "Confirmed" ? "success" :
+                                                (app.Status.ToString() == "Cancelled" ? "danger" : "secondary");
+                                            }
+                                            <span class="badge bg-@badgeClass">@app.Status</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="fas fa-calendar-times fa-2x mb-2 d-block"></i>
+                                        Brak historii wizyt dla tego klienta.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

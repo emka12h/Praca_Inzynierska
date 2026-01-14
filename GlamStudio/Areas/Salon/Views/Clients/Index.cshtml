@@ -1,0 +1,265 @@
+﻿@model IEnumerable<GlamStudio.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Baza Klientów";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .search-card {
+        background-color: #ffffff;
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+
+    .search-input-group {
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+        z-index: 5;
+    }
+
+    .form-control-search {
+        padding-left: 50px;
+        border-radius: 10px;
+        height: 55px;
+        border: 1px solid #dee2e6;
+        background-color: #fcfcfc;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-search:focus {
+            box-shadow: 0 0 0 4px rgba(232, 194, 198, 0.15);
+            border-color: #E8C2C6;
+            background-color: #fff;
+        }
+
+    .btn-search {
+        height: 55px;
+        border-radius: 10px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 30px;
+    }
+
+    .avatar-circle {
+        width: 45px;
+        height: 45px;
+        background-color: #f3f4f6;
+        color: #4D4C4A;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .table-desktop thead th {
+        border-bottom: 2px solid #f0f0f0;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        padding: 15px;
+        background-color: #fff;
+    }
+
+    .table-desktop tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f9f9f9;
+        color: #333;
+    }
+
+    .table-desktop tbody tr:hover {
+        background-color: #fdfbfb;
+    }
+
+
+    @@media (max-width: 767.98px) {
+
+        .header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+            .header-mobile .btn {
+                width: 100%;
+            }
+
+        .search-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .col-search-input,
+        .col-search-btn {
+            width: 100%;
+        }
+
+        .btn-search {
+            width: 100%;
+        }
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            padding-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .mobile-table tbody td {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-bottom: 1px solid #f8f9fa;
+            text-align: left;
+        }
+
+            .mobile-table tbody td:last-child {
+                border-bottom: none;
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                padding-top: 1rem;
+                background-color: #fafafa;
+            }
+
+        .td-notes::before {
+            content: "Notatki: ";
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="container pb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 header-mobile">
+        <div>
+            <h1 class="h2 mb-0 text-secondary">Baza Klientów</h1>
+            <p class="text-muted small mb-0">Zarządzaj listą i danymi klientów</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary shadow-sm px-4 py-2" style="background-color: #E8C2C6; border: none; color: #4D4C4A; font-weight:600;">
+            <i class="fas fa-user-plus me-2"></i> Dodaj klienta
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="Index" method="get" class="search-card">
+        <div class="row g-3 search-row">
+            <div class="col-md col-search-input">
+                <div class="search-input-group">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="searchString" class="form-control form-control-search"
+                           placeholder="Wpisz nazwisko, imię, email lub telefon..."
+                           value="@Context.Request.Query["searchString"]" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="col-md-auto col-search-btn">
+                <button class="btn btn-primary btn-search" type="submit" style="background-color: #E8C2C6; border: none; color: #4D4C4A;">
+                    Szukaj
+                </button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Context.Request.Query["searchString"]))
+            {
+                <div class="col-md-auto col-search-btn">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-search" title="Wyczyść filtry">
+                        <i class="fas fa-times me-md-2"></i> <span class="d-inline d-md-none">Wyczyść</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </form>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0 mobile-table table-desktop">
+                <thead>
+                    <tr>
+                        <th>Klient</th>
+                        <th>Dane Kontaktowe</th>
+                        <th>Notatki</th>
+                        <th class="text-end pe-4">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-3">
+                                        @(item.FirstName?.FirstOrDefault().ToString() ?? "")@(item.LastName?.FirstOrDefault().ToString() ?? "")
+                                    </div>
+                                    <div>
+                                        <span class="fw-bold d-block text-dark" style="font-size: 1.05rem;">@item.LastName @item.FirstName</span>
+                                        <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>@(item.City ?? "Brak miasta")</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="mb-1"><i class="fas fa-envelope text-muted me-2" style="width: 16px;"></i><a href="mailto:@item.Email" class="text-decoration-none text-secondary">@item.Email</a></span>
+                                    <span><i class="fas fa-phone text-muted me-2" style="width: 16px;"></i><a href="tel:@item.PhoneNumber" class="text-decoration-none text-secondary">@(item.PhoneNumber ?? "-")</a></span>
+                                </div>
+                            </td>
+                            <td class="td-notes">
+                                @if (!string.IsNullOrEmpty(item.SalonNotes))
+                                {
+                                    <span class="text-truncate d-inline-block text-muted fst-italic" style="max-width: 250px;" title="@item.SalonNotes">
+                                        @item.SalonNotes
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small opacity-50">-</span>
+                                }
+                            </td>
+                            <td class="text-end pe-md-4">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info me-1" title="Szczegóły">
+                                    <i class="fas fa-info-circle"></i> <span class="d-md-none ms-1">Szczegóły</span>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Edytuj">
+                                    <i class="fas fa-edit"></i> <span class="d-md-none ms-1">Edytuj</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

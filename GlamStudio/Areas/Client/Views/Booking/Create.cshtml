@@ -1,0 +1,302 @@
+﻿@model GlamStudio.Areas.Client.Models.BookingViewModel
+
+@{
+    ViewData["Title"] = "Umów wizytę";
+    Layout = "~/Areas/Client/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .btn-primary {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        transition: 0.3s ease;
+    }
+
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: #d4a6ab !important;
+            color: #222 !important;
+        }
+
+        .btn-primary:disabled {
+            background-color: #e9ecef;
+            color: #adb5bd;
+            border: none;
+        }
+
+    .time-slot-btn {
+        width: 90px;
+        padding: 8px 0;
+        text-align: center;
+        border: 1px solid #C5A09A;
+        color: #C5A09A;
+        background-color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+        user-select: none;
+    }
+
+        .time-slot-btn:hover {
+            background-color: #fcf5f4;
+            transform: translateY(-2px);
+        }
+
+        .time-slot-btn.active {
+            background-color: #C5A09A;
+            color: white;
+            border-color: #C5A09A;
+            box-shadow: 0 4px 10px rgba(197, 160, 154, 0.4);
+            transform: translateY(0);
+        }
+
+    /* --- wersja mobilna--- */
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-header {
+            background: transparent !important;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .card-body {
+            padding: 1rem 0 !important;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            text-align: left !important;
+        }
+
+        .form-select-lg, .form-control-lg {
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        #slots-container {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px !important;
+        }
+
+        .time-slot-btn {
+            width: 100% !important;
+            padding: 12px 0;
+            font-size: 1.1rem;
+        }
+
+        .d-flex.flex-wrap.gap-2 {
+            display: grid !important;
+            gap: 10px !important;
+        }
+    }
+
+    @@media (max-width: 380px) {
+        #slots-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .time-slot-btn {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h2 class="mb-0" style="color: #4D4C4A;">Rezerwacja Wizyty</h2>
+                </div>
+                <div class="card-body p-4">
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm rounded-3" role="alert"></div>
+
+                    <form asp-action="Create" method="post" id="bookingForm">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label asp-for="ServiceId" class="form-label fw-bold text-muted small text-uppercase ls-1">1. Wybierz zabieg</label>
+                            <div class="input-group shadow-sm rounded-3">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-cut text-muted"></i></span>
+                                <select asp-for="ServiceId" class="form-select form-select-lg border-start-0 ps-0" asp-items="Model.ServicesList">
+                                    <option value="" disabled selected>-- Wybierz zabieg --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="ServiceId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="EmployeeId" class="form-label fw-bold text-muted small text-uppercase ls-1">2. Wybierz specjalistę</label>
+                            <div class="input-group shadow-sm rounded-3">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-user text-muted"></i></span>
+                                <select asp-for="EmployeeId" class="form-select form-select-lg border-start-0 ps-0" asp-items="Model.EmployeesList">
+                                    <option value="" disabled selected>-- Najpierw wybierz zabieg --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Date" class="form-label fw-bold text-muted small text-uppercase ls-1">3. Wybierz datę</label>
+                            <div class="input-group shadow-sm rounded-3">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
+                                <input asp-for="Date" class="form-control form-control-lg border-start-0 ps-0" type="date"
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase ls-1">4. Dostępne godziny</label>
+
+                            <div id="slots-loader" class="text-center py-4 d-none bg-light rounded-3">
+                                <div class="spinner-border text-secondary" role="status">
+                                    <span class="visually-hidden">Ładowanie...</span>
+                                </div>
+                                <p class="text-muted mt-2 mb-0 small">Sprawdzam kalendarz...</p>
+                            </div>
+
+                            <div id="slots-container" class="d-flex flex-wrap gap-2 justify-content-start">
+                                <div class="alert alert-light border w-100 text-center text-muted">
+                                    <i class="fas fa-arrow-up me-2"></i>Uzupełnij powyższe dane
+                                </div>
+                            </div>
+
+                            <input type="hidden" asp-for="Time" id="selectedTime" />
+                            <span asp-validation-for="Time" class="text-danger d-block mt-2 small fw-bold"></span>
+                        </div>
+
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm py-3 fw-bold" id="submitBtn" disabled>
+                                Potwierdź rezerwację
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            const $serviceSelect = $('#ServiceId');
+            const $employeeSelect = $('#EmployeeId');
+            const $dateInput = $('#Date');
+            const $slotsContainer = $('#slots-container');
+            const $loader = $('#slots-loader');
+            const $timeInput = $('#selectedTime');
+            const $submitBtn = $('#submitBtn');
+
+            //Zmiana usługi - Pobieranie pracowników
+            $serviceSelect.change(function() {
+                var serviceId = $(this).val();
+
+                $employeeSelect.empty().append('<option value="" disabled selected>-- Wybierz specjalistę --</option>');
+
+
+                $slotsContainer.html('<div class="alert alert-light border w-100 text-center text-muted">Wybierz specjalistę</div>');
+                $timeInput.val('');
+                $submitBtn.prop('disabled', true);
+
+                if (!serviceId) return;
+
+                $.ajax({
+                    url: '@Url.Action("GetEmployeesByService", "Booking", new { Area = "Client" })',
+                    data: { serviceId: serviceId },
+                    success: function(data) {
+                        if (data.length === 0) {
+                            $employeeSelect.append('<option value="" disabled>Brak dostępnych specjalistów</option>');
+                        } else {
+                            $.each(data, function(i, item) {
+                                $employeeSelect.append($('<option>', {
+                                    value: item.value,
+                                    text : item.text
+                                }));
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Wystąpił błąd podczas pobierania listy specjalistów.');
+                    }
+                });
+            });
+
+            //ładowanie godzin
+            function loadAvailableSlots() {
+                const serviceId = $serviceSelect.val();
+                const employeeId = $employeeSelect.val();
+                const date = $dateInput.val();
+
+                $timeInput.val('');
+                $submitBtn.prop('disabled', true);
+
+                if (!serviceId || !employeeId || !date) {
+                    if(serviceId && employeeId && !date) {
+                         $slotsContainer.html('<div class="alert alert-light border w-100 text-center text-muted"><i class="fas fa-calendar me-2"></i>Wybierz datę wizyty</div>');
+                    } else if (serviceId && !employeeId) {
+                         $slotsContainer.html('<div class="alert alert-light border w-100 text-center text-muted">Wybierz specjalistę</div>');
+                    }
+                    return;
+                }
+
+                $slotsContainer.empty();
+                $loader.removeClass('d-none');
+
+                $.ajax({
+                    url: '@Url.Action("GetAvailableTimeSlots", "Booking", new { Area = "Client" })',
+                    type: 'GET',
+                    data: { employeeId: employeeId, serviceId: serviceId, date: date },
+                    success: function (data) {
+                        $loader.addClass('d-none');
+                        if (data.length === 0) {
+                            $slotsContainer.html('<div class="alert alert-warning w-100 text-center"><i class="fas fa-exclamation-circle me-2"></i>Brak wolnych terminów w tym dniu.</div>');
+                        } else {
+                            data.forEach(function (time) {
+                                const $btn = $('<div class="time-slot-btn">' + time + '</div>');
+                                $btn.click(function () {
+                                    $('.time-slot-btn').removeClass('active');
+                                    $(this).addClass('active');
+                                    $timeInput.val(time);
+                                    $submitBtn.prop('disabled', false);
+                                });
+                                $slotsContainer.append($btn);
+                            });
+                        }
+                    },
+                    error: function () {
+                        $loader.addClass('d-none');
+                        $slotsContainer.html('<div class="alert alert-danger w-100">Błąd połączenia. Spróbuj odświeżyć.</div>');
+                    }
+                });
+            }
+
+            $employeeSelect.change(loadAvailableSlots);
+            $dateInput.change(loadAvailableSlots);
+
+            if ($serviceSelect.val()) {
+                $serviceSelect.trigger('change');
+            }
+        });
+    </script>
+}

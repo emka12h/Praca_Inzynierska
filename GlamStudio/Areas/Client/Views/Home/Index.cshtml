@@ -1,0 +1,192 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using GlamStudio.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<div class="hero-section text-center">
+    <div class="hero-content">
+        <h1 class="hero-title">Twoje miejsce relaksu i piękna</h1>
+        <p class="hero-subtitle">Odkryj zabiegi stworzone z myślą o Twoim komforcie</p>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <a asp-area="Client" asp-controller="Booking" asp-action="Create" class="hero-btn">Umów wizytę</a>
+        }
+        else
+        {
+            <a asp-area="Identity" asp-page="/Account/Login"
+               asp-route-returnUrl="@Url.Action("Create", "Booking", new { area = "Client" })"
+               class="hero-btn">Umów wizytę</a>
+        }
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row g-4 justify-content-center">
+
+        <!-- Karta 1: Twarz -->
+        <div class="col-md-3">
+            <div class="service-card shadow-sm">
+                <h5 class="service-title">Zabiegi na twarz</h5>
+                <ul>
+                    <li><a href="#">Masaże liftingujące</a></li>
+                    <li><a href="#">Oczyszczanie manualne</a></li>
+                    <li><a href="#">Peelingi kwasowe</a></li>
+                </ul>
+                <a asp-area="Client" asp-controller="Offer" asp-action="Index" asp-fragment="Twarz" class="service-btn">ZOBACZ</a>
+            </div>
+        </div>
+
+        <!-- Karta 2: Ciało -->
+        <div class="col-md-3">
+            <div class="service-card shadow-sm">
+                <h5 class="service-title">Zabiegi na ciało</h5>
+                <ul>
+                    <li><a href="#">Masaże relaksacyjne</a></li>
+                    <li><a href="#">Body wrapping</a></li>
+                    <li><a href="#">Zabiegi antycellulitowe</a></li>
+                </ul>
+                <a asp-area="Client" asp-controller="Offer" asp-action="Index" asp-fragment="Ciało" class="service-btn">ZOBACZ</a>
+            </div>
+        </div>
+
+        <!-- Karta 3:  Dłonie -->
+        <div class="col-md-3">
+            <div class="service-card shadow-sm">
+                <h5 class="service-title">Zabiegi na dłonie</h5>
+                <ul>
+                    <li><a href="#">Manicure hybrydowy</a></li>
+                    <li><a href="#">Manicure klasyczny</a></li>
+                    <li><a href="#">Manicure żelowy</a></li>
+                </ul>
+                <a asp-area="Client" asp-controller="Offer" asp-action="Index" asp-fragment="Dłonie" class="service-btn">ZOBACZ</a>
+            </div>
+        </div>
+        <!--Karta 4: Fryzjerstwo-->
+        <div class="col-md-3">
+            <div class="service-card shadow-sm">
+                <h5 class="service-title">Fryzjerstwo</h5>
+                <ul>
+                    <li><a href="#">Strzyżenie damskie</a></li>
+                    <li><a href="#">Koloryzacja</a></li>
+                    <li><a href="#">Strzyżenie męskie</a></li>
+                </ul>
+                <a asp-area="Client" asp-controller="Offer" asp-action="Index" asp-fragment="Fryzjerstwo" class="service-btn">ZOBACZ</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        background-image: url('/images/kwiaty.png');
+        background-size: contain;
+        background-position: center;
+        padding: 140px 20px;
+        position: relative;
+        width: 100vw;
+        position: relative;
+        margin-left: calc(50% - 50vw);
+    }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(1px);
+        }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 600;
+        color: #5a3c3c;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        color: #7a5f5f;
+    }
+
+    .hero-btn {
+        padding: 12px 26px;
+        background-color: #c7a29e;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .hero-btn:hover {
+            background-color: #b48c86;
+            color: white !important;
+        }
+
+    .service-card {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        transition: 0.3s;
+        height: 100%;
+    }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .service-title {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        color: #5a3c3c;
+        font-weight: 600;
+    }
+
+    .service-card ul li a {
+        text-decoration: none;
+        color: #7a5f5f;
+        transition: 0.2s;
+    }
+
+        .service-card ul li a:hover {
+            color: #b48c86;
+        }
+
+    .service-btn {
+        display: inline-block;
+        margin-top: 15px;
+        color: #b48c86 !important;
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 1px solid #b48c86;
+        padding-bottom: 3px;
+    }
+
+        .service-btn:hover,
+        .service-btn:focus,
+        .service-btn:active {
+            color: #8a6d6d !important;
+            border-color: #8a6d6d;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .service-btn:visited {
+            color: #b48c86 !important;
+        }
+
+    body {
+        background: #f9f5f4;
+    }
+</style>

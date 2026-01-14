@@ -1,0 +1,293 @@
+﻿@model IEnumerable<GlamStudio.Models.Appointment>
+@using GlamStudio.Models
+@inject Microsoft.AspNetCore.Identity.UserManager<GlamStudio.Models.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Zarządzanie Wizytami";
+    Layout = "~/Areas/Salon/Views/Shared/_Layout.cshtml";
+
+    string currentFilter = ViewData["CurrentFilter"] as string;
+    string currentEmployeeId = ViewData["CurrentEmployeeId"] as string;
+}
+
+<style>
+
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+
+    @@media (max-width: 991.98px) {
+        .header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+            .header-mobile h1 {
+                font-size: 1.8rem;
+            }
+
+            .header-mobile .btn-create {
+                width: 100%;
+                padding: 12px;
+            }
+
+        .filters-mobile {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-group {
+            width: 100%;
+            display: flex;
+        }
+
+            .btn-group .btn {
+                flex: 1;
+                padding: 10px 5px;
+                font-size: 0.9rem;
+            }
+
+        .employee-select-form {
+            width: 100%;
+        }
+
+
+        .mobile-table thead {
+            display: none;
+        }
+
+        .mobile-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        .mobile-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border: none;
+            border-bottom: 1px solid #f8f9fa;
+            text-align: right;
+        }
+
+            .mobile-table tbody td:last-child {
+                border-bottom: none;
+                display: block;
+                padding-top: 15px;
+            }
+
+            .mobile-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #6c757d;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                text-align: left;
+                margin-right: 15px;
+            }
+
+        .dropdown-menu {
+            width: 100%;
+            text-align: center;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-toggle {
+            width: 100%;
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container pb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 header-mobile">
+        <h1 class="mb-0 text-secondary">Zarządzanie Wizytami</h1>
+        <a asp-action="Create" class="btn btn-glam-pink shadow-sm btn-create">
+            <i class="fas fa-plus me-2"></i>Nowa Rezerwacja
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4 filters-mobile">
+
+        <div class="btn-group shadow-sm" role="group">
+            <a asp-action="Index" asp-route-filter="upcoming" asp-route-employeeId="@currentEmployeeId"
+               class="btn @(currentFilter == "upcoming" ? "btn-dark" : "btn-outline-dark")">Nadchodzące</a>
+
+            <a asp-action="Index" asp-route-filter="today" asp-route-employeeId="@currentEmployeeId"
+               class="btn @(currentFilter == "today" ? "btn-dark" : "btn-outline-dark")">Dzisiaj</a>
+
+            <a asp-action="Index" asp-route-filter="history" asp-route-employeeId="@currentEmployeeId"
+               class="btn @(currentFilter == "history" ? "btn-dark" : "btn-outline-dark")">Historia</a>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <form asp-action="Index" method="get" class="employee-select-form ms-lg-3">
+                <input type="hidden" name="filter" value="@currentFilter" />
+
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-user-filter text-muted"></i></span>
+                    <select name="employeeId" class="form-select border-start-0 ps-0"
+                            asp-items="ViewBag.Employees" onchange="this.form.submit()">
+                        <option value="">Wszyscy pracownicy</option>
+                    </select>
+                </div>
+            </form>
+        }
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0 mobile-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Data i Czas</th>
+                        <th>Klient</th>
+                        <th>Usługa</th>
+                        <th>Specjalista</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <div class="mb-3 display-6"><i class="far fa-calendar-times"></i></div>
+                                <p class="mb-0 fw-bold">Brak wizyt dla wybranych kryteriów.</p>
+                            </td>
+                        </tr>
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="Termin">
+                                <div class="d-flex flex-column align-items-end align-items-lg-start">
+                                    <span class="fw-bold fs-5 text-dark">@item.AppointmentDate.ToString("dd.MM")</span>
+                                    <span class="text-muted small">@item.AppointmentDate.ToString("yyyy") | @item.AppointmentTime.ToString(@"hh\:mm")</span>
+                                </div>
+                            </td>
+                            <td data-label="Klient">
+                                <div class="d-flex align-items-center justify-content-end justify-content-lg-start">
+                                    <div class="d-md-none me-2 bg-light rounded-circle d-flex justify-content-center align-items-center text-secondary fw-bold" style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                        @(item.Client.FirstName.FirstOrDefault())@(item.Client.LastName.FirstOrDefault())
+                                    </div>
+                                    <div class="text-end text-lg-start">
+                                        <span class="fw-bold d-block">@item.Client.FirstName @item.Client.LastName</span>
+                                        <small class="text-muted"><i class="fas fa-phone me-1"></i>@item.Client.PhoneNumber</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="Usługa">
+                                <div class="text-end text-lg-start">
+                                    <span class="d-block text-primary fw-bold">@item.Service.ServiceName</span>
+                                    <small class="text-muted">@item.Service.DurationInMinutes min</small>
+                                </div>
+                            </td>
+                            <td data-label="Specjalista">
+                                @if (item.EmployeeID == UserManager.GetUserId(User))
+                                {
+                                    <span class="badge bg-light text-dark border">Ty</span>
+                                }
+                                else
+                                {
+                                    <span>@item.Employee.FirstName @item.Employee.LastName</span>
+                                }
+                            </td>
+                            <td data-label="Status">
+                                @RenderStatusBadge(item.Status)
+                            </td>
+                            <td data-label="" class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-cog me-1"></i> Zmień status
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <form asp-action="ChangeStatus" method="post">
+                                                <input type="hidden" name="id" value="@item.AppointmentID" />
+                                                <input type="hidden" name="newStatus" value="@AppointmentStatus.Confirmed" />
+                                                <button type="submit" class="dropdown-item text-success"><i class="fas fa-check me-2"></i>Potwierdź</button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form asp-action="ChangeStatus" method="post">
+                                                <input type="hidden" name="id" value="@item.AppointmentID" />
+                                                <input type="hidden" name="newStatus" value="@AppointmentStatus.Completed" />
+                                                <button type="submit" class="dropdown-item text-primary"><i class="fas fa-flag-checkered me-2"></i>Zakończono</button>
+                                            </form>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-action="ChangeStatus" method="post">
+                                                <input type="hidden" name="id" value="@item.AppointmentID" />
+                                                <input type="hidden" name="newStatus" value="@AppointmentStatus.NoShow" />
+                                                <button type="submit" class="dropdown-item text-dark"><i class="fas fa-user-slash me-2"></i>Nieobecność</button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form asp-action="ChangeStatus" method="post">
+                                                <input type="hidden" name="id" value="@item.AppointmentID" />
+                                                <input type="hidden" name="newStatus" value="@AppointmentStatus.CancelledBySalon" />
+                                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-ban me-2"></i>Anuluj (Salon)</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public Microsoft.AspNetCore.Html.IHtmlContent RenderStatusBadge(AppointmentStatus status)
+    {
+        string badgeClass = "bg-secondary";
+        string text = status.ToString();
+        string icon = "";
+
+        switch (status)
+        {
+            case AppointmentStatus.Scheduled: badgeClass = "bg-info text-dark"; text = "Zaplanowana"; icon = "fas fa-clock"; break;
+            case AppointmentStatus.Confirmed: badgeClass = "bg-success"; text = "Potwierdzona"; icon = "fas fa-check-circle"; break;
+            case AppointmentStatus.Completed: badgeClass = "bg-primary"; text = "Zakończona"; icon = "fas fa-star"; break;
+            case AppointmentStatus.CancelledByClient: badgeClass = "bg-warning text-dark"; text = "Anulowana (K)"; icon = "fas fa-user-times"; break;
+            case AppointmentStatus.CancelledBySalon: badgeClass = "bg-danger"; text = "Anulowana (S)"; icon = "fas fa-ban"; break;
+            case AppointmentStatus.NoShow: badgeClass = "bg-dark"; text = "Nieobecność"; icon = "fas fa-ghost"; break;
+        }
+        return Html.Raw($"<span class='badge {badgeClass} rounded-pill px-3 py-2'><i class='{icon} me-1'></i>{text}</span>");
+    }
+}

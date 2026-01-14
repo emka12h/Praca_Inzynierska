@@ -1,0 +1,170 @@
+﻿@model GlamStudio.Areas.Client.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "Moje Konto";
+    Layout = "~/Areas/Client/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .hover-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+    .dashboard-icon {
+        font-size: 3em; 
+        color: #C5A09A;
+        margin-bottom: 1rem;
+        transition: transform 0.3s;
+    }
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+        }
+
+        h1.display-6 {
+            font-size: 1.6rem; 
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info-box {
+            text-align: left !important;
+            margin-top: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        .dashboard-card-body {
+            padding: 1.25rem 1rem !important; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .dashboard-icon {
+            font-size: 2em; 
+            margin-bottom: 0.5rem;
+        }
+
+        h4.card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        p.card-text {
+            font-size: 0.75rem; 
+            line-height: 1.3;
+            margin-bottom: 0;
+            display: none; 
+        }
+
+        @@media (min-width: 400px) {
+            p.card-text {
+                display: block;
+            }
+        }
+
+        .btn-stretched-mobile {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            margin-top: 0.5rem !important;
+        }
+    }
+</style>
+
+<div class="container py-4">
+
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-6 text-secondary">Witaj, <span style="color: #C5A09A; font-weight: bold;">@Model.FirstName!</span></h1>
+            <p class="text-muted mb-0">Zarządzaj swoimi wizytami i danymi.</p>
+        </div>
+
+        <div class="col-md-4 mt-3 mt-md-0">
+            <div class="p-3 bg-white rounded border shadow-sm user-info-box d-flex align-items-center justify-content-between justify-content-md-end">
+                <div class="d-md-none me-3">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-secondary fw-bold" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                        @(Model.FirstName.FirstOrDefault())@(Model.LastName.FirstOrDefault())
+                    </div>
+                </div>
+                <div class="text-md-end">
+                    <small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Twoje konto</small><br />
+                    <strong class="text-dark">@Model.FirstName @Model.LastName</strong><br />
+                    <span class="text-muted small">@Model.Email</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row g-3 g-md-4">
+
+        <div class="col-6 col-md-4">
+            <div class="card h-100 shadow-sm border-0 hover-shadow rounded-3">
+                <div class="card-body dashboard-card-body text-center">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h4 class="card-title">Wizyty</h4>
+                    <p class="card-text text-muted">Historia i plany</p>
+                    <a asp-action="MyVisits" class="btn btn-outline-dark mt-auto stretched-link btn-stretched-mobile">Zobacz</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <div class="card h-100 shadow-sm border-0 hover-shadow rounded-3">
+                <div class="card-body dashboard-card-body text-center">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4 class="card-title">Wiadomości</h4>
+                    <p class="card-text text-muted">Kontakt z salonem</p>
+                    <a asp-action="MyMessages" class="btn btn-outline-dark mt-auto stretched-link btn-stretched-mobile">Otwórz</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <div class="card h-100 shadow-sm border-0 hover-shadow rounded-3">
+                <div class="card-body dashboard-card-body text-center">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h4 class="card-title">Dane</h4>
+                    <p class="card-text text-muted">Edytuj profil</p>
+                    <a asp-action="Settings" class="btn btn-outline-dark mt-auto stretched-link btn-stretched-mobile">Edytuj</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <div class="card h-100 shadow-sm border-0 hover-shadow rounded-3">
+                <div class="card-body dashboard-card-body text-center">
+                    <div class="dashboard-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h4 class="card-title">Hasło</h4>
+                    <p class="card-text text-muted">Zmień hasło</p>
+                    <a asp-action="ChangePassword" class="btn btn-outline-dark mt-auto stretched-link btn-stretched-mobile">Zmień</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

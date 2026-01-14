@@ -1,0 +1,184 @@
+﻿@model GlamStudio.Models.Message
+@{
+    ViewData["Title"] = "Szczegóły wiadomości";
+}
+
+<style>
+    .btn-glam-pink {
+        background-color: #E8C2C6;
+        color: #4D4C4A;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        padding: 12px 20px;
+    }
+
+        .btn-glam-pink:hover {
+            background-color: #d4a6ab;
+            color: #222;
+        }
+
+    .reply-bubble {
+        background-color: #f0f8ff;
+        border-left: 5px solid #E8C2C6;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-top: 1rem !important;
+        }
+
+        .header-mobile {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+            .header-mobile h1 {
+                font-size: 1.6rem;
+            }
+
+            .header-mobile .btn-back {
+                width: 100%;
+            }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .card-header {
+            background: transparent !important;
+            padding: 0 0 1rem 0 !important;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 1rem 0 !important;
+        }
+
+        .meta-row {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .meta-col {
+            width: 100%;
+            text-align: left !important;
+        }
+
+        .btn-submit-mobile {
+            width: 100%;
+            padding: 12px;
+        }
+
+        .fs-5 {
+            font-size: 1rem !important;
+        }
+    }
+</style>
+
+<div class="container pb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 header-mobile">
+        <h1 class="h2 mb-0 text-secondary">Wiadomość</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+            <i class="fas fa-arrow-left me-2"></i> Wróć do listy
+        </a>
+    </div>
+
+    <div class="card shadow-sm rounded-3 mb-4">
+        <div class="card-header bg-light rounded-top-3 p-4">
+            <div class="row g-3 meta-row">
+                <div class="col-md-6 meta-col">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-user-circle fa-2x text-muted me-3"></i>
+                        <div>
+                            <div class="small text-uppercase text-muted fw-bold">Nadawca</div>
+                            <div class="fs-5 fw-bold text-dark">@Model.SendersName</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end meta-col">
+                    <div>
+                        <span class="badge @(Model.IsReadBySalon ? "bg-secondary" : "bg-success") mb-2">
+                            @(Model.IsReadBySalon ? "Odczytano" : "Nowa")
+                        </span>
+                    </div>
+                    <div class="text-muted small">
+                        <i class="far fa-clock me-1"></i> @Model.DateSent.ToString("dd.MM.yyyy, HH:mm")
+                    </div>
+                </div>
+            </div>
+
+            <hr class="text-muted my-3 opacity-25">
+
+            <div class="row meta-row">
+                <div class="col-md-12">
+                    <a href="mailto:@Model.SendersEmail" class="text-decoration-none text-secondary">
+                        <i class="fas fa-envelope me-2"></i>@Model.SendersEmail
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <h6 class="text-uppercase text-muted small fw-bold mb-3">Treść wiadomości:</h6>
+            <div class="p-3 bg-white border rounded-3 fs-5 text-dark" style="white-space: pre-wrap; line-height: 1.6;">@Model.Contents</div>
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+            <h3 class="h4 text-secondary"><i class="fas fa-reply me-2"></i>Odpowiedź</h3>
+        </div>
+        <div class="card-body px-4 pb-4">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success rounded-3 mb-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                </div>
+            }
+
+            @if (Model.ReplyContent != null)
+            {
+                <div class="reply-bubble shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-dark"><i class="fas fa-user-shield me-1"></i> Odpowiedź salonu:</strong>
+                        <small class="text-muted">@Model.ReplyDate?.ToString("g")</small>
+                    </div>
+                    <p class="mb-2" style="white-space: pre-wrap; color: #333;">@Model.ReplyContent</p>
+                    <div class="text-end border-top pt-2 mt-2">
+                        <small class="text-muted fst-italic">Przez: @(Model.ReplySentBy?.UserName ?? "System")</small>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning small">
+                    <i class="fas fa-info-circle me-1"></i> Odpowiedź została już wysłana. Wysłanie kolejnej nadpisze poprzednią.
+                </div>
+            }
+
+            <form asp-action="SendReply" asp-route-id="@Model.MessageId" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label for="replyText" class="form-label fw-bold">Treść odpowiedzi:</label>
+                    <textarea name="replyText" id="replyText" class="form-control form-control-lg" rows="6" placeholder="Wpisz treść wiadomości do klienta..."></textarea>
+                </div>
+                <div class="text-end text-md-start">
+                    <button type="submit" class="btn btn-glam-pink btn-submit-mobile shadow-sm">
+                        <i class="fas fa-paper-plane me-2"></i> Wyślij odpowiedź
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
