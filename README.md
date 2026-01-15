@@ -46,7 +46,7 @@ Projekt zrealizowano przy użyciu nowoczesnego stosu technologicznego Microsoft:
 
 ## Autor
 
-**Emilia Sordyl** Studentka kierunku Informatyka  
+**Emilia Sordyl**
 
 ## Promotor
 
