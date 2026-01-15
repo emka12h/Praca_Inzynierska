@@ -12,15 +12,15 @@ Aplikacja została zaimplementowana w architekturze **MVC** i spełnia standardy
 
 ---
 
-## 🚀 Kluczowe Funkcjonalności
+## Kluczowe Funkcjonalności
 
-### 👤 Strefa Klienta
+### Strefa Klienta
 * **Rezerwacja Online:** Intuicyjny kreator wizyt z wyborem usługi, pracownika i terminu.
 * **Profil Użytkownika:** Historia wizyt, możliwość samodzielnego anulowania rezerwacji, edycja danych osobowych.
 * **Responsywność:** Pełne dostosowanie do smartfonów i tabletów.
 * **Instalacja PWA:** Możliwość dodania aplikacji do ekranu głównego telefonu (bez AppStore/Google Play).
 
-### 🏢 Strefa Salonu
+### Strefa Salonu
 * **Inteligentny Grafik:** Interaktywny kalendarz pracy personelu (zintegrowany z `FullCalendar.js`).
 * **Zarządzanie Wizytami:** Weryfikacja dostępności terminów w czasie rzeczywistym (zapobieganie *double-booking*), zmiana statusów wizyt.
 * **Baza CRM:** Kartoteki klientów z historią zabiegów i prywatnymi notatkami dla personelu (np. o alergiach).
@@ -29,7 +29,7 @@ Aplikacja została zaimplementowana w architekturze **MVC** i spełnia standardy
 
 ---
 
-## 🛠️ Wykorzystane Technologie
+## Wykorzystane Technologie
 
 Projekt zrealizowano przy użyciu nowoczesnego stosu technologicznego Microsoft:
 
@@ -44,7 +44,7 @@ Projekt zrealizowano przy użyciu nowoczesnego stosu technologicznego Microsoft:
 
 ---
 
-## 📄 Autor
+## Autor
 
 **Emilia Sordyl** Studentka kierunku Informatyka  
 
